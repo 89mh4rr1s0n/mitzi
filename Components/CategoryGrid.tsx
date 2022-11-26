@@ -9,18 +9,20 @@ type Props = {
 
 const CategoryGrid = ({ title, categories, products }: Props) => {
   return (
-    <div className='m-5 pb-5 bg-theme-blue rounded-lg'>
-      <div className='mx-3 my-2 text-white'>{title}</div>
-      <div className='grid grid-cols-4'>
-        {categories.map((category, i) => (
-          <CategoryCard
-            key={i}
-            images={products.filter(i=>i.category === category).map(i=>i.thumbnail).slice(0, 4)}
-            categoryName={category}
-          />
-        ))}
+      <div className='m-10'>
+        <div className='pt-2 bg-slate-400 rounded-lg max-w-[1800px] m-auto'>
+          <div className='text-white bg-theme-red rounded-md w-fit px-4 ml-3 mb-2'>{title}</div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+            {categories.map((category, i) => (
+              <CategoryCard
+                key={i}
+                images={products.filter(i=>i.category === category).map(i=>i.thumbnail).slice(0, 4)}
+                categoryName={category}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
   )
 }
 
