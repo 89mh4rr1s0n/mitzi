@@ -7,7 +7,7 @@ import {
     ShoppingCartIcon,
 } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react"
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/dist/client/router';
 // import { useSelector } from 'react-redux';
 // import { selectItems } from '../slices/basketSlice';
 
@@ -20,13 +20,22 @@ const Header = ({ products }: Props) => {
     // console.log(products)
 
     // const { data: session, status } = useSession()
-    const router = useRouter()
+    const router = useRouter();
     // const items = useSelector(selectItems)
     const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
     // console.log(categories)
     const [filteredProducts, setFilteredProducts] = useState([])
     const [searchWord, setSearchWord] = useState('')
-    console.log(filteredProducts)
+    // console.log(filteredProducts)
+
+    const search = (categoryName: string) => {
+        router.push({
+            pathname: "/products",
+            query: {
+                category: [categoryName]
+            }
+        })
+    }
 
     const handleFilter = (e) => {
         setSearchWord(e.target.value)
@@ -42,7 +51,7 @@ const Header = ({ products }: Props) => {
                 product.brand.toLowerCase().includes(searchWord.toLowerCase())
             ))
         }
-      }, [searchWord]);
+    }, [searchWord]);
 
     return (
         <>
@@ -121,8 +130,8 @@ const Header = ({ products }: Props) => {
                     className='flex items-center bg-amazon_blue-light text-sm text-white bg-slate-300
                     space-x-3 px-2 py-1 pt-2 sm:overflow-x-scroll scrollbar-thin scrollbar-thumb-theme-red'>
                     <MenuIcon className='inline sm:hidden h-6 mr-2' />
-                    {["all"].concat(categories).map((cat: string, i: number) => (
-                        <button key={i} className="min-w-min sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
+                    {categories.map((cat: string, i: number) => (
+                        <button key={i} onClick={() => search(cat)} className="min-w-min sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
                             <span className="min-w-min w-52 h-52 rounded rotate-[-40deg] bg-theme-red absolute bottom-0 left-0 -translate-x-full ease-out duration-450 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
                             <span className=" whitespace-nowrap relative w-full text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">{cat}</span>
                         </button>

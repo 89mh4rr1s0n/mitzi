@@ -16,7 +16,7 @@ const CategoryCard = ({ images, categoryName }: Props) => {
     router.push({
       pathname: "/products",
       query: {
-        category: categoryName
+        category: [categoryName]
       }
     })
   }

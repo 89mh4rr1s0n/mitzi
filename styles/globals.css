@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+label#sort-by-dropdown {
+  background-color: white;
+}
