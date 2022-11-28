@@ -16,7 +16,7 @@ const SmallProductCard = ({ description, thumbnail, discount, rating }: Props) =
     const [hover, setHover] = useState(false)
 
     return (
-        <div className='py-4 px-3 relative hover:bg-black/20 rounded-lg transition-all duration-400 z-40'
+        <div className='py-4 px-3 relative hover:bg-black/10 rounded-lg transition-all duration-400 z-40 snap-start'
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
             {hover &&
@@ -50,12 +50,12 @@ const SmallProductCard = ({ description, thumbnail, discount, rating }: Props) =
                     className='ml-2 w-fit z-20 relative'
                 />
                 {ratingOpen &&
-                    <div className='bg-zinc-800 text-white absolute bottom-[61px] text-xs p-1 left-[115px] rounded-sm'>
+                    <div className='bg-zinc-700 text-white absolute bottom-[61px] text-xs p-1 left-[115px] rounded-sm'>
                         {`Avg Rating: ${rating} out of 5`}
                     </div>
                 }
             </div>
-            <h4 className='mx-3 text-white text-sm line-clamp-2'>{description}</h4>
+            <h4 className='mx-3 text-black text-sm line-clamp-2'>{description}</h4>
         </div>
     )
 }

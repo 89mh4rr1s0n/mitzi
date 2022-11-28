@@ -31,9 +31,6 @@ const Dropdown = ({ sort, setSort, title, values }: Props) => {
 
   return (
     <div>
-      {/* <Button sx={{ display: 'block', mt: 2 }} onClick={handleOpen}>
-        Open the select
-      </Button> */}
       <FormControl sx={{ minWidth: 140 }}  size="small">
         <InputLabel id="sort-by-dropdown">{title}</InputLabel>
         <Select
@@ -43,10 +40,10 @@ const Dropdown = ({ sort, setSort, title, values }: Props) => {
           onClose={handleClose}
           onOpen={handleOpen}
           value={sort}
-          label="Age"
+          label="Sort"
           onChange={handleChange}
         >
-          <MenuItem value="No Sort">
+          <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {values.map((value , i) => (

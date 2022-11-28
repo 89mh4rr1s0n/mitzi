@@ -4,12 +4,24 @@ import { useRouter } from 'next/router'
 import MediumProductCard from './MediumProductCard'
 import Checkbox from './Checkbox'
 import Dropdown from './Dropdown'
+import { loadProducts, fetchProducts, selectProducts } from '../slices/productsSlice'
+import { useSelector, useDispatch } from "react-redux";
 
 type Props = {
   products
 }
 
 const ProductFeed = ({ products }: Props) => {
+
+  const dispatch = useDispatch()
+  const allProducts = useSelector(selectProducts)
+  console.log(allProducts)
+
+  useEffect(() => {
+    // if(allProducts === []){
+      dispatch(fetchProducts())
+    // }
+  }, [])
 
   const router = useRouter()
   const [sort, setSort] = useState<string | number>('')
@@ -22,7 +34,13 @@ const ProductFeed = ({ products }: Props) => {
   const handleCheck = (event) => {
     var updatedList = checkedCategories;
     if (event.target.checked) {
-      checkedCategories.push(event.target.value)
+      if(event.target.value === 'all'){
+        updatedList = ['all']
+      } else {
+        // setCheckecCategories([])
+        // updatedList.splice(checkedCategories.indexOf('all'), 1);
+        checkedCategories.push(event.target.value)
+      }
     } else {
       updatedList.splice(checkedCategories.indexOf(event.target.value), 1);
     }
@@ -36,7 +54,7 @@ const ProductFeed = ({ products }: Props) => {
     router.push(newQuery)
   };
 
-  // console.log(sort)
+  console.log(sort)
 
   useEffect(() => {
     if(sort === 'priceLoToHi'){
@@ -46,18 +64,14 @@ const ProductFeed = ({ products }: Props) => {
     }
   }, [sort])
 
-  console.log(sort)
-  console.log(filteredProducts)
-
-  // useEffect(() => {
-  //   if (router.query.category === undefined) {
-  //     setCheckecCategories([])
-  //   }
-  // }, [])
+  useEffect(() => {
+    setSort('')
+  }, [checkedCategories, router])
 
   useEffect(() => {
-    if(checkedCategories === undefined){
+    if(router.query.category?.includes('all')){
       setFilteredProducts(products.products)
+      setCheckecCategories(['all'])
     } else {
       setFilteredProducts(products.products.filter(product =>
         checkedCategories.flat().includes(product.category)
@@ -72,7 +86,7 @@ const ProductFeed = ({ products }: Props) => {
     <div className='my-5 pb-5 max-w-[1000px] m-auto rounded-lg flex'>
       <div className=' min-w-[190px]'>
         <div className=' font-semibold my-2 mt-8 pt-4'>Category</div>
-        {categories.map((category: string, i) => (
+        {['all'].concat(categories).map((category: string, i) => (
           // <Checkbox key={i} value={category} field='category'/>
           <div key={i}>
             <input value={category} id={category} name={category} type="checkbox" onChange={handleCheck}
