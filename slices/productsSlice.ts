@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-// import { fetchProducts } from '../utils/fetchProducts'
 import axios from 'axios'
-// import type { PayloadAction,   } from '@reduxjs/toolkit'
 
 const productsUrl = "https://dummyjson.com/products?limit=100"
 

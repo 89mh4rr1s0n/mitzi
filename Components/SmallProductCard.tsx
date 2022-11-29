@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
 import Image from 'next/image';
 import Rating from '@mui/material/Rating';
+import { useRouter } from 'next/router'
 
 type Props = {
     key: number,
     description: string,
     thumbnail: string,
     discount: number,
-    rating: number
+    rating: number,
+    itemNo: number
 }
 
-const SmallProductCard = ({ description, thumbnail, discount, rating }: Props) => {
+const SmallProductCard = ({ description, thumbnail, discount, rating, itemNo }: Props) => {
 
     const [ratingOpen, setRatingOpen] = useState(false)
     const [hover, setHover] = useState(false)
+    const router = useRouter()
 
     return (
         <div className='py-4 px-3 relative hover:bg-black/10 rounded-lg transition-all duration-400 z-40 snap-start'
@@ -27,7 +30,8 @@ const SmallProductCard = ({ description, thumbnail, discount, rating }: Props) =
                     </div>
                 </div>}
             <div className=' min-h-[200px] max-h-[200px] min-w-[230px] flex items-center
-            content-center justify-center overflow-hidden'>
+            content-center justify-center overflow-hidden'
+            onClick={()=>{searchItem(pro)}}>
                 <Image
                     src={thumbnail}
                     height={100}

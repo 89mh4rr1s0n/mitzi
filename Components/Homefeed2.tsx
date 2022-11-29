@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import gsap from "gsap";
 import SmallProductCard from './SmallProductCard'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
@@ -8,6 +7,31 @@ const Homefeed2 = ({ products, title }: Props) => {
   const [scrollX, setscrollX] = useState(0);
   const [scrolEnd, setscrolEnd] = useState(false);
   const [arrowsVisible, setArrowsVisible] = useState(false)
+
+  Math.easeInOutQuad = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return c / 2 * t * t + b;
+    t--;
+    return -c / 2 * (t * (t - 2) - 1) + b;
+  };
+
+  function scrollLeft(element, change, duration) {
+    var start = element.scrollLeft,
+      currentTime = 0,
+      increment = 20;
+
+    console.log(start)
+
+    var animateScroll = function () {
+      currentTime += increment;
+      var val = Math.easeInOutQuad(currentTime, start, change, duration);
+      element.scrollLeft = val;
+      if (currentTime < duration) {
+        setTimeout(animateScroll, increment);
+      }
+    };
+    animateScroll();
+  }
 
   //Slide click
   const slide = (shift) => {
@@ -22,16 +46,6 @@ const Homefeed2 = ({ products, title }: Props) => {
     } else {
       setscrolEnd(false);
     }
-  };
-
-  //Anim
-  const anim = (e) => {
-    gsap.from(e.target, { scale: 1 });
-    gsap.to(e.target, { scale: 1 });
-  };
-  const anim2 = (e) => {
-    gsap.from(e.target, { scale: 1 });
-    gsap.to(e.target, { scale: 1 });
   };
 
   const scrollCheck = () => {
@@ -75,16 +89,16 @@ const Homefeed2 = ({ products, title }: Props) => {
             <button
               className="absolute top-0 bottom-0 z-50 text-white
               bg-gradient-to-t from-transparent via-gray-900/40 to-transparent hover:via-gray-900/60"
-              onClick={() => slide(-150)}
-              onMouseEnter={(e) => anim(e)}
-              onMouseLeave={(e) => anim2(e)}
+              // onClick={() => slide(-150)}
+              onClick={() => scrollLeft(scrl.current, -400, 200)}
             >
               <ChevronLeftIcon className='h-7 w-7 mb-16' />
             </button>
           )}
 
 
-          <div className="flex overflow-x-scroll scrollbar-thin snap-x snap-mandatory
+          {/* items */}
+          <div className="flex overflow-x-scroll scrollbar-thin
           scrollbar-thumb-theme-red pb-2 mx-7" ref={scrl} onScroll={scrollCheck}>
             {products.map((product) => (
               <SmallProductCard
@@ -103,9 +117,7 @@ const Homefeed2 = ({ products, title }: Props) => {
             <button
               className="absolute right-0 top-0 bottom-0 text-white z-50
               bg-gradient-to-t from-transparent via-gray-900/40 to-transparent hover:via-gray-900/60"
-              onClick={() => slide(+150)}
-              onMouseEnter={(e) => anim(e)}
-              onMouseLeave={(e) => anim2(e)}
+              onClick={() => scrollLeft(scrl.current, 400, 200)}
             >
               <ChevronRightIcon className='h-7 w-7 mb-16' />
             </button>
