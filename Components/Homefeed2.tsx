@@ -3,6 +3,7 @@ import SmallProductCard from './SmallProductCard'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
 const Homefeed2 = ({ products, title }: Props) => {
+
   let scrl = useRef(null);
   const [scrollX, setscrollX] = useState(0);
   const [scrolEnd, setscrolEnd] = useState(false);
@@ -20,7 +21,7 @@ const Homefeed2 = ({ products, title }: Props) => {
       currentTime = 0,
       increment = 20;
 
-    console.log(start)
+    // console.log(start)
 
     var animateScroll = function () {
       currentTime += increment;
@@ -100,9 +101,10 @@ const Homefeed2 = ({ products, title }: Props) => {
           {/* items */}
           <div className="flex overflow-x-scroll scrollbar-thin
           scrollbar-thumb-theme-red pb-2 mx-7" ref={scrl} onScroll={scrollCheck}>
-            {products.map((product) => (
+            {products.map((product, i) => (
               <SmallProductCard
-                key={product.id}
+                key={i}
+                itemNo={product.id}
                 description={product.description}
                 thumbnail={product.thumbnail}
                 discount={product.discountPercentage}

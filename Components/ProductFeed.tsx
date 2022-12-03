@@ -17,7 +17,7 @@ const ProductFeed = ({ products }: Props) => {
   const dispatch = useDispatch()
   const allProducts = useSelector(selectProducts)
   const cats = useSelector(selectCategories)
-  // console.log(allProducts)
+  console.log(allProducts)
   // console.log(cats)
 
   useEffect(() => {
@@ -78,14 +78,14 @@ const ProductFeed = ({ products }: Props) => {
   }
 
   // useEffect(() => {
-  //   if (sort === 'priceLoToHi') {
+  //   if (sort === 'priceLoToHi' && cats.length === 0) {
   //     setFilteredProducts([...filteredProducts].sort((a, b) => a.price - b.price))
-  //   } else if (sort === 'priceHiToLo') {
+  //   } else if (sort === 'priceHiToLo' && cats.length === 0) {
   //     setFilteredProducts([...filteredProducts].sort((a, b) => b.price - a.price))
-  //   } else if (sort === 'rating') {
+  //   } else if (sort === 'rating' && cats.length === 0) {
   //     setFilteredProducts([...filteredProducts].sort((a, b) => b.rating - a.rating))
   //   }
-  // }, [sort, cats])
+  // }, [sort])
 
   // useEffect(() => {
   //   setSort('')
@@ -109,11 +109,11 @@ const ProductFeed = ({ products }: Props) => {
     <div className='my-5 pb-5 max-w-[1000px] m-auto rounded-lg flex'>
 
 
-      <div className=' min-w-[190px]'>
+      <div className=' min-w-[190px] px-1 mx-1 '>
 
         {/* categories filter checkboxes */}
-        <div className=' font-semibold my-2 mt-8 pt-4'>Category</div>
-        <div>
+        <div className=' font-semibold my-2 mt-8 pt-4 '>Category</div>
+        <div className='bg-slate-100 rounded-lg px-1'>
           {categories.map((category: string, i) => (
             <div key={i}>
               <input value={category} id={category} name={category} type="checkbox" onChange={handleCategoryCheck}
@@ -150,7 +150,7 @@ const ProductFeed = ({ products }: Props) => {
         </div>
 
 
-        {filteredProducts.map((product, i) => (
+        {sortProducts(filteredProducts, sort).map((product, i) => (
           <MediumProductCard
             key={i}
             itemNo={product.id}

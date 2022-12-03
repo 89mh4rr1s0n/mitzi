@@ -4,10 +4,38 @@ import Homefeed from '../Components/Homefeed'
 import Homefeed2 from '../Components/Homefeed2'
 import CategoryGrid from '../Components/CategoryGrid'
 import Banner from '../Components/Banner'
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchProducts,
+  selectProducts,
+  selectCategories,
+  selectMostDiscounted,
+  selectTopRated
+} from '../slices/productsSlice'
+import getStore, { store } from '../store'
+import { useEffect } from 'react'
 
-export default function Home({ products }) {
+export default function Home(/*{ products }*/) {
 
-  const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+  const dispatch = useDispatch()
+  const products = useSelector(selectProducts)
+  const categories = useSelector(selectCategories)
+  const mostDiscounted = useSelector(selectMostDiscounted)
+  const topRated = useSelector(selectTopRated)
+
+  useEffect(() => {
+    if (products.length === 0) {
+      dispatch(fetchProducts())
+    }
+  }, [])
+
+  console.log(products)
+
+  {
+    if (products.length === 0) {
+      return <div>loading</div>
+    }
+  }
 
   return (
     <div>
@@ -23,12 +51,12 @@ export default function Home({ products }) {
 
         <Homefeed2
           title='Shop our biggest discounted items'
-          products={products.products.sort((a, b) => b.discountPercentage - a.discountPercentage).slice(0, 10)}
+          products={mostDiscounted}
         />
 
         <Homefeed2
           title='Shop our highest rated items'
-          products={products.products.sort((a, b) => b.rating - a.rating).slice(0, 10)}
+          products={topRated}
         />
 
         <CategoryGrid
@@ -43,15 +71,26 @@ export default function Home({ products }) {
   )
 }
 
-export async function getServerSideProps() {
-  const products = await fetch("https://dummyjson.com/products?limit=100").
-    then(
-      (res) => res.json()
-    )
+// export async function getServerSideProps() {
+//   // const products = await fetch("https://dummyjson.com/products?limit=100").
+//   //   then(
+//   //     (res) => res.json()
+//   //   )
 
-  return {
-    props: {
-      products,
-    }
-  }
-}
+//   // return {
+//   //   props: {
+//   //     products,
+//   //   }
+//   // }
+
+//   // const store = getStore()
+//   const store = getStore()
+//   await store.dispatch(fetchProducts())
+//   return {
+//     props: {
+//       initialState: store.getState(),
+//     }
+//   }
+// }
+
+

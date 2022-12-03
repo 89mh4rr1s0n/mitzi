@@ -18,6 +18,15 @@ const SmallProductCard = ({ description, thumbnail, discount, rating, itemNo }: 
     const [hover, setHover] = useState(false)
     const router = useRouter()
 
+    const searchItem = (item: number) => {
+        router.push({
+            pathname: '/item',
+            query: {
+                productNumber: item
+            }
+        })
+    }
+
     return (
         <div className='py-4 px-3 relative hover:bg-black/10 rounded-lg transition-all duration-400 z-40 snap-start'
             onMouseEnter={() => setHover(true)}
@@ -25,13 +34,13 @@ const SmallProductCard = ({ description, thumbnail, discount, rating, itemNo }: 
             {hover &&
                 <div className='absolute flex items-center  justify-center h-3/5 w-full'>
                     <div className='relative mr-5 bg-zinc-800 p-2 hover:text-zinc-800 hover:bg-white 
-                    hover:border transition-all duration-200 text-white rounded-md cursor-pointer'>
+                    hover:border transition-all duration-200 text-white rounded-md cursor-pointer'
+                    onClick={()=>{searchItem(itemNo)}}>
                         view details
                     </div>
                 </div>}
             <div className=' min-h-[200px] max-h-[200px] min-w-[230px] flex items-center
-            content-center justify-center overflow-hidden'
-            onClick={()=>{searchItem(pro)}}>
+            content-center justify-center overflow-hidden'>
                 <Image
                     src={thumbnail}
                     height={100}
