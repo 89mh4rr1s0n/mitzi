@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import ReactImageMagnify from 'react-image-magnify';
 import Rating from '@mui/material/Rating';
-
+import { addToCart } from '../slices/cartSlice'
+import { useDispatch } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 type Props = {
   idNo: number,
@@ -33,10 +36,33 @@ const LargeProductCard = ({
 
   const [item, setItem] = useState({})
 
+  const dispatch = useDispatch()
+
   const [activeImage, setActiveImage] = useState(images[images.length - 1])
+
+  const addItemToCart = () => {
+    const product = {
+      id: idNo,
+      title,
+      description,
+      price,
+      discountPercentage,
+      rating,
+      stock,
+      brand,
+      category,
+      thumbnail,
+      images
+    }
+    dispatch(addToCart(product))
+    // toast('Item added to cart')
+  }
 
   return (
     <div className='m-auto max-w-[850px] flex mt-6'>
+      <ToastContainer
+        autoClose={1400}
+      />
 
 
       <div>
@@ -107,9 +133,12 @@ const LargeProductCard = ({
           <div className=' mb-1 font-bold text-2xl'>{`£${price}.00`}</div>
           <div className='mb-5'>{`${stock} left in stock`}</div>
 
-          <button className="w-fit sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
+          <button onClick={addItemToCart}
+            className="w-fit sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
             <span className="min-w-min w-52 h-52 rounded rotate-[-40deg] bg-theme-red absolute bottom-0 left-0 -translate-x-full ease-out duration-450 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-            <span className=" whitespace-nowrap relative w-fit text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">add to basket</span>
+            <span className=" whitespace-nowrap relative w-fit text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">
+              add to basket
+            </span>
           </button>
         </div>
       </div>

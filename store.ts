@@ -8,12 +8,14 @@ import {
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import productsReducer from './slices/productsSlice'
 import filtersReducer from './slices/filtersSlice'
+import cartReducer from './slices/cartSlice';
 
 export default function getStore(preloadedState) {
   store = configureStore({
     reducer: {
       products: productsReducer,
       filters: filtersReducer,
+      cart: cartReducer,
     },
     preloadedState,
   });
@@ -41,6 +43,7 @@ export let store = configureStore({
   reducer: {
     products: productsReducer,
     filters: filtersReducer,
+    cart: cartReducer,
   },
 })
 

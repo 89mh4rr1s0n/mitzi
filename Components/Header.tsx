@@ -99,7 +99,7 @@ const Header = ({ products }: Props) => {
                     </div>
 
                     {/* right */}
-                    <div className='text-white flex items-center text-xs space-x-4 mx-5 whitespace-nowrap'>
+                    <div className='text-black flex items-center text-xs space-x-4 mx-5 whitespace-nowrap'>
                         <div className='link' /*onClick={!session ? signIn : signOut}*/>
                             <p>
                                 {/*session ? `Hello, ${session.user.name}` :*/ `Sign In`}
@@ -114,7 +114,7 @@ const Header = ({ products }: Props) => {
 
                         <div className='relative link flex items-center' onClick={() => router.push("checkout")}>
                             <span
-                                className='absolute top-0 right-0 sm:right-9 bg-yellow-500 
+                                className='absolute top-0 right-0 sm:right-9 bg-theme-red/50 
                                 rounded-full h-4 w-4 text-center text-black font-bold'>
                                 {/* {items.length} */}
                                 items here
