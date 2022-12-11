@@ -8,8 +8,8 @@ import {
 } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/dist/client/router';
-// import { useSelector } from 'react-redux';
-// import { selectItems } from '../slices/basketSlice';
+import { selectItems } from '../slices/cartSlice';
+import { useSelector } from 'react-redux';
 
 type Props = {
     products
@@ -17,11 +17,9 @@ type Props = {
 
 const Header = ({ products }: Props) => {
 
-    // console.log(products)
-
-    // const { data: session, status } = useSession()
+    const { data: session, status } = useSession()
     const router = useRouter();
-    // const items = useSelector(selectItems)
+    const items = useSelector(selectItems)
     const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
     // console.log(categories)
     const [filteredProducts, setFilteredProducts] = useState([])
@@ -58,14 +56,13 @@ const Header = ({ products }: Props) => {
             <header >
                 {/* top nav */}
                 <div className='flex items-center justify-between p-1 flex-grow py-2 bg-slate-100'>
-                    <div className='mt-2 pl-5 flex items-center flex-grow sm:flex-grow-0 mr-5'>
+                    <div className='mt-2 pl-5 flex items-center flex-grow sm:flex-grow-0 mr-5 cursor-pointer'
+                        onClick={() => router.push("/")}>
                         <Image
-                            onClick={() => router.push("/")}
                             src='/pngaaa.com-1757256.png'
                             width={60}
                             height={60}
                             objectFit='contain'
-                            className='cursor-pointer'
                             alt=''
                         />
                         <div className='text-theme-red text-2xl font-bold hidden sm:inline'>ITZI</div>
@@ -82,7 +79,7 @@ const Header = ({ products }: Props) => {
                             className='h-8 bg-theme-red text-white hover:bg-theme-blue p-1.5 rounded-r-md'
                         />
                         {searchWord.length > 0 &&
-                            <div className='absolute block w-full  top-[31px]  bg-slate-100 border-[1px] max-w-[550px] z-50 rounded-lg px-2 py-1'>
+                            <div className='absolute block w-full top-[31px] bg-slate-100 border-[1px] max-w-[550px] z-50 rounded-lg px-2 py-1'>
                                 <div className='flex flex-col'>
                                     {filteredProducts.length > 0 ? filteredProducts.slice(0, 12).map((item, i) => (
                                         <div key={i} className='line-clamp-1 font-semibold text-slate-600'>
@@ -100,9 +97,9 @@ const Header = ({ products }: Props) => {
 
                     {/* right */}
                     <div className='text-black flex items-center text-xs space-x-4 mx-5 whitespace-nowrap'>
-                        <div className='link' /*onClick={!session ? signIn : signOut}*/>
+                        <div className='link' onClick={!session ? signIn : signOut}>
                             <p>
-                                {/*session ? `Hello, ${session.user.name}` :*/ `Sign In`}
+                                {session ? `Hello, ${session.user.name}` : `Sign In`}
                             </p>
                             <p className='font-bold md:text-sm'>{`Account & Lists`}</p>
                         </div>
@@ -112,12 +109,11 @@ const Header = ({ products }: Props) => {
                             <p className='font-bold md:text-sm'>{`& Orders`}</p>
                         </div>
 
-                        <div className='relative link flex items-center' onClick={() => router.push("checkout")}>
+                        <div className='relative link flex items-center' onClick={() => router.push("cart")}>
                             <span
-                                className='absolute top-0 right-0 sm:right-9 bg-theme-red/50 
-                                rounded-full h-4 w-4 text-center text-black font-bold'>
-                                {/* {items.length} */}
-                                items here
+                                className='absolute top-0 right-0 sm:right-10 bg-theme-red
+                                rounded-full h-4 w-4 text-center text-white font-bold'>
+                                {items.reduce((a, b) => a + b.quantity, 0)}
                             </span>
                             <ShoppingCartIcon className='h-7' />
                             <p className='hidden sm:inline font-bold md:text-sm mt-3'>Basket</p>

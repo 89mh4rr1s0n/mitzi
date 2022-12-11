@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .link {
+      @apply cursor-pointer hover:underline;
+  }
+  .button {
+      @apply bg-gradient-to-t from-yellow-500 to-yellow-200 
+      py-2 rounded-md border-yellow-300 focus:outline-none
+      focus:ring-2 focus:ring-yellow-400 active:to-yellow-400
+  }
+}
+
 label#sort-by-dropdown {
   background-color: white;
 }
