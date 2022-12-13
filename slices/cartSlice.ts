@@ -76,10 +76,16 @@ export const cartSlice = createSlice({
         });
       }
     },
+    changeQuantity(state, action) {
+      const itemIndex = state.items.findIndex(
+        (item) => item.id === action.payload.item.id
+      );
+      state.items[itemIndex].quantity = action.payload.value;
+    }
   },
 });
 
-export const { addToCart, removeFromCart, decreaseQuantity } = cartSlice.actions;
+export const { addToCart, removeFromCart, decreaseQuantity, changeQuantity } = cartSlice.actions;
 
 export const selectItems = (state: { cart: FiltersState }) => state.cart.items;
 export const selectTotal = (state) => 

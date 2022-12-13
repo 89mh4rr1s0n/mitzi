@@ -2,6 +2,14 @@ import React, { useState } from 'react'
 import Image from 'next/image';
 import Rating from '@mui/material/Rating';
 import { useRouter } from 'next/router'
+import {
+  PlusIcon,
+  MinusIcon,
+} from "@heroicons/react/outline";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash} from '@fortawesome/free-solid-svg-icons'
+import { decreaseQuantity, addToCart, changeQuantity } from '../slices/cartSlice'
+import { useDispatch } from 'react-redux'
 
 type Props = {
   id: number,
@@ -9,7 +17,6 @@ type Props = {
   stock: number,
   discountPercentage: number,
   brand: string,
-  discount: number,
   price: number,
   rating: number,
   thumbnail: string,
@@ -24,7 +31,6 @@ const CartCard = ({
   stock,
   discountPercentage,
   brand,
-  discount,
   price,
   rating,
   thumbnail,
@@ -35,8 +41,33 @@ const CartCard = ({
 
   const router = useRouter()
 
+  const dispatch = useDispatch()
+
+  const product = {
+    id: id,
+    title,
+    description,
+    price,
+    discountPercentage,
+    rating,
+    stock,
+    brand,
+    category,
+    thumbnail,
+    // images
+  }
+
+  const addItemToCart = () => {
+    dispatch(addToCart(product))
+    // toast('Item added to cart')
+  }
+
+  const removeItem = () => {
+    dispatch(decreaseQuantity(product))
+  }
+
   return (
-    <div className='flex my-5 py-2 shadow-lg rounded-lg'>
+    <div className='flex p-5 py-2 my-3 rounded-lg shadow-md'>
 
 
       {/* left side with image */}
@@ -68,9 +99,33 @@ const CartCard = ({
           <div className='text-xs p-1 px-2 bg-theme-red text-white w-fit'>{`${discountPercentage}% off`}</div>
           <div className=' line-clamp-2 py-1'>{description}</div>
           <div className=' font-bold'>{`£${price}.00`}</div>
+          <div>{`${stock} left in stock`}</div>
         </div>
 
-        <div>{quantity}</div>
+        <div className='flex my-3 items-center'>
+          <div className='w-10'>{`Qty: `}</div>
+          <div className='flex  rounded-lg'>
+
+            <div className=' text-white rounded-l-md p-1 cursor-pointer hover:bg-theme-red 
+            bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={removeItem}>
+              {quantity === 1 ? 
+              <FontAwesomeIcon icon={faTrash} className='h-4 flex-grow w-[24px]' /> :
+              <MinusIcon className='h-6  flex-grow p-1' />
+              }
+            </div>
+
+            <input type='number' value={quantity} min={1} max={stock}
+              onChange={e => parseInt(e.target.value) < stock &&  dispatch(changeQuantity({ item: product, value: parseInt(e.target.value) }))}
+              className='w-8 text-center border-y focus:outline-none'>
+            </input>
+
+            <div className=' text-white rounded-r-md p-1 cursor-pointer hover:bg-theme-red 
+            bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={quantity < stock && addItemToCart}>
+              <PlusIcon className='h-6  flex-grow p-1' />
+            </div>
+
+          </div>
+        </div>
 
       </div>
     </div>

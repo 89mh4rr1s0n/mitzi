@@ -14,6 +14,7 @@ import {
 } from '../slices/productsSlice'
 import getStore, { store } from '../store'
 import { useEffect } from 'react'
+import Footer from '../Components/Footer'
 
 export default function Home(/*{ products }*/) {
 
@@ -66,6 +67,8 @@ export default function Home(/*{ products }*/) {
         />
 
       </main>
+
+      <Footer/>
 
     </div>
   )

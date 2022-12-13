@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectItems, selectTotal } from '../slices/cartSlice';
 import { selectProducts, fetchProducts } from '../slices/productsSlice';
 import { useEffect } from 'react'
+import { useSession } from 'next-auth/react';
+import Currency from 'react-currency-formatter';
 
 import { useRouter } from 'next/router'
 
@@ -15,6 +17,7 @@ export default function Home(/*{ products }*/) {
   const products = useSelector(selectProducts);
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
+  const { data: session, status } = useSession()
 
   useEffect(() => {
     if (products.length === 0) {
@@ -39,12 +42,12 @@ export default function Home(/*{ products }*/) {
 
       <Header products={products} />
 
-      <main className=' bg-slate-50'>
+      <main className='  lg:flex max-w-screen-xl m-auto'>
 
 
         {/* left side/ */}
-        <div className=' bg-white m-5'>
-          <div className='text-2xl font-semibold'>Shopping Basket</div>
+        <div className=' bg-white rounded-lg m-5'>
+          <div className='text-2xl font-semibold m-5'>Shopping Basket</div>
 
           {items.map((item, i) => (
             <CartCard
@@ -64,6 +67,30 @@ export default function Home(/*{ products }*/) {
           ))}
         </div>
 
+        {/* right */}
+        <div className='flex flex-col m-5 lg:ml-0 py-6 bg-white shadow-lg rounded-lg'>
+          {items.length > 0 && (
+            <>
+              <h2 className='ml-5 whitespace-nowrap p-4'>Subtotal ({items.reduce((a, b) => a + b.quantity, 0)} items):{" "}
+                <span className='font-bold'>
+                  <Currency
+                    quantity={total}
+                    currency='GBP'
+                  />
+                </span>
+              </h2>
+
+              <button
+                className={`bg-theme-blue font-medium rounded-md hover:bg-theme-red text-white py-2 mx-4  
+                ${!session && 'bg-gray-300 text-black hover:bg-gray-400 cursor-not-allowed'}`}>
+
+                {!session ? "Sign in to Proceed" : "Proceed to Checkout"}
+
+              </button>
+
+            </>
+          )}
+        </div>
 
 
       </main>
