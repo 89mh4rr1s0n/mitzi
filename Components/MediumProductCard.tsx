@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import Image from 'next/image';
 import Rating from '@mui/material/Rating';
 import { useRouter } from 'next/router'
+import { addToCart } from '../slices/cartSlice'
+import { useDispatch } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 type Props = {
   brand: string,
@@ -11,14 +15,34 @@ type Props = {
   thumbnail: string,
   title: string,
   description: string,
-  itemNo: number
+  itemNo: number,
+  stock: number,
+  category: string
 }
 
-const MediumProductCard = ({ brand, discount, price, rating, thumbnail, title, description, itemNo }: Props) => {
+const MediumProductCard = ({ brand, discount, price, rating, thumbnail, title, description, itemNo, stock, category }: Props) => {
 
   const [imageHover, setImageHover] = useState(false)
 
   const router = useRouter()
+  const dispatch = useDispatch()
+
+  const addItemToCart = () => {
+    const product = {
+      id: itemNo,
+      title,
+      description,
+      price,
+      discountPercentage: discount,
+      rating,
+      stock,
+      brand,
+      category,
+      thumbnail,
+    }
+    dispatch(addToCart(product))
+    // toast('Item added to cart')
+  }
 
   const searchItem = (item: number) => {
     router.push({
@@ -73,11 +97,16 @@ const MediumProductCard = ({ brand, discount, price, rating, thumbnail, title, d
           <div className='text-xs p-1 px-2 bg-theme-red text-white w-fit'>{`${discount}% off`}</div>
           <div className=' line-clamp-2 py-1'>{description}</div>
           <div className=' font-bold'>{`£${price}.00`}</div>
+          <div>{ category }</div>
         </div>
-        <button className="w-fit sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
+
+
+        <button onClick={addItemToCart}
+        className="w-fit sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
           <span className="min-w-min w-52 h-52 rounded rotate-[-40deg] bg-theme-red absolute bottom-0 left-0 -translate-x-full ease-out duration-450 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
           <span className=" whitespace-nowrap relative w-fit text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">add to basket</span>
         </button>
+
       </div>
     </div>
   )

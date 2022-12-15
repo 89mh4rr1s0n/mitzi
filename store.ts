@@ -18,7 +18,8 @@ const persistConfig = {
   storage,
 }
 
-const persistedReducer = persistReducer(persistConfig, cartReducer)
+const persistedCartReducer = persistReducer(persistConfig, cartReducer)
+const persistedFilterReducer = persistReducer(persistConfig, filtersReducer)
 
 // export default function getStore(preloadedState) {
 //   store = configureStore({
@@ -36,10 +37,10 @@ const persistedReducer = persistReducer(persistConfig, cartReducer)
 export let store = configureStore({
   reducer: {
     products: productsReducer,
-    filters: filtersReducer,
+    // filters: filtersReducer,
     // cart: cartReducer,
-    // persistedReducer,
-    cart: persistedReducer
+    filters: persistedFilterReducer,
+    cart: persistedCartReducer
   },
   middleware: [thunk]
 })

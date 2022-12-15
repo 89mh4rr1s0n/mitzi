@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import Layout from '../Components/Layout'
 import type { AppProps } from 'next/app'
 import { store, persistor } from '../store'
 import { Provider } from 'react-redux'
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <SessionProvider session={pageProps.session}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Component {...pageProps} />
+          {/* <Layout> */}
+            <Component {...pageProps} />
+          {/* </Layout> */}
         </PersistGate>
       </Provider>
     </SessionProvider>

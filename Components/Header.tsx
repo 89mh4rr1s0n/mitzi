@@ -9,7 +9,8 @@ import {
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/dist/client/router';
 import { selectItems } from '../slices/cartSlice';
-import { useSelector } from 'react-redux';
+import { updateCategories } from '../slices/filtersSlice'
+import { useSelector, useDispatch } from 'react-redux';
 
 type Props = {
     products
@@ -17,16 +18,18 @@ type Props = {
 
 const Header = ({ products }: Props) => {
 
-    const { data: session, status } = useSession()
+    const { data: session, status } = useSession();
     const router = useRouter();
-    const items = useSelector(selectItems)
-    const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
-    // console.log(categories)
-    const [filteredProducts, setFilteredProducts] = useState([])
-    const [searchWord, setSearchWord] = useState('')
-    // console.log(filteredProducts)
+    const dispatch = useDispatch();
+    const items = useSelector(selectItems);
+    const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort();
+    // console.log(categories);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchWord, setSearchWord] = useState('');
+    // console.log(filteredProducts);
 
     const search = (categoryName: string) => {
+        dispatch(updateCategories(categoryName))
         router.push({
             pathname: "/products",
             query: {

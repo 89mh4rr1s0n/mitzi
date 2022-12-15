@@ -4,8 +4,9 @@ import { useRouter } from 'next/router'
 import MediumProductCard from './MediumProductCard'
 import Checkbox from './Checkbox'
 import Dropdown from './Dropdown'
+import Pagination from './Pagination'
 import { fetchProducts, selectProducts } from '../slices/productsSlice'
-import { addCategory, removeCategory, selectCategories, clearCategories } from '../slices/filtersSlice'
+import { addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters, updateCategories } from '../slices/filtersSlice'
 import { useSelector, useDispatch } from "react-redux";
 
 type Props = {
@@ -17,8 +18,26 @@ const ProductFeed = ({ products }: Props) => {
   const dispatch = useDispatch()
   const allProducts = useSelector(selectProducts)
   const cats = useSelector(selectCategories)
-  console.log(allProducts)
+  const allFilters = useSelector(selectAllFilters)
+  console.log(allFilters)
+  const router = useRouter()
+  const [sort, setSort] = useState<string | number>('rating')
+  const [checkedCategories, setCheckecCategories] = useState([router.query.category])
+  console.log(cats)
   // console.log(cats)
+
+  console.log(router.query)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
+
+  const indexOfItem = currentPage * postsPerPage;
+  const indexOfFItem = indexOfItem - postsPerPage;
+  // const currentPosts = posts.slice(indexOfFItem, indexOfItem);
+  const [filteredProducts, setFilteredProducts] = useState([].slice(indexOfFItem, indexOfItem))
+
+  const paginatedProducts = filteredProducts.slice(indexOfFItem, indexOfItem)
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   useEffect(() => {
     // if(allProducts === []){
@@ -26,49 +45,23 @@ const ProductFeed = ({ products }: Props) => {
     // }
   }, [])
 
-  const router = useRouter()
-  const [sort, setSort] = useState<string | number>('rating')
-  const [checkedCategories, setCheckecCategories] = useState([router.query.category])
-  // console.log(checkedCategories.flat())
 
-  const [filteredProducts, setFilteredProducts] = useState([])
-  // console.log(router.query)
-
-  // const handleCategoryCheck = (event) => {
-  //   var updatedList = checkedCategories;
-  //   if (event.target.checked) {
-  //     if(event.target.value === 'all'){
-  //       updatedList = ['all']
-  //     } else {
-  //       // setCheckecCategories([])
-  //       // updatedList.splice(checkedCategories.indexOf('all'), 1);
-  //       checkedCategories.push(event.target.value)
-  //     }
-  //   } else {
-  //     updatedList.splice(checkedCategories.indexOf(event.target.value), 1);
-  //   }
-  //   setCheckecCategories(updatedList);
-  //   const newQuery = {
-  //     ...router,
-  //     query: {
-  //       category: updatedList
-  //     }
-  //   }
-  //   router.push(newQuery)
-  // };
-
-  const handleCategoryCheck = (event) => {
-    if (event.target.checked) {
-      dispatch(addCategory(event.target.value))
-    } else {
-      dispatch(removeCategory(event.target.value))
-    }
-  }
-
-  console.log(sort)
+  // sort on page load if router has a category query
+  useEffect(() => {
+    router.query.category ?
+      dispatch(updateCategories([router.query.category])) :
+      dispatch(clearCategories())
+  }, [])
 
   const sortProducts = (arr: [], sorting: string) => {
     if (sorting === 'priceLoToHi') {
+      // const newQuery = {
+      //   ...router,
+      //   query: {
+      //     sort: 'priceLoToHi'
+      //   }
+      // }
+      router.push(newQuery)
       return arr.sort((a, b) => a.price - b.price)
     } else if (sorting === 'priceHiToLo') {
       return arr.sort((a, b) => b.price - a.price)
@@ -77,33 +70,50 @@ const ProductFeed = ({ products }: Props) => {
     }
   }
 
-  // useEffect(() => {
-  //   if (sort === 'priceLoToHi' && cats.length === 0) {
-  //     setFilteredProducts([...filteredProducts].sort((a, b) => a.price - b.price))
-  //   } else if (sort === 'priceHiToLo' && cats.length === 0) {
-  //     setFilteredProducts([...filteredProducts].sort((a, b) => b.price - a.price))
-  //   } else if (sort === 'rating' && cats.length === 0) {
-  //     setFilteredProducts([...filteredProducts].sort((a, b) => b.rating - a.rating))
-  //   }
-  // }, [sort])
 
-  // useEffect(() => {
-  //   setSort('')
-  // }, [checkedCategories, router])
+  const handleCategoryCheck = (event) => {
+    if (event.target.checked) {
+      dispatch(addCategory(event.target.value))
+    } else {
+      dispatch(removeCategory(event.target.value))
+    }
+    // const newQuery = {
+    //   ...router,
+    //   query: {
+    //     category: cats
+    //   }
+    // }
+    // router.push(newQuery)
+  }
+
+  // console.log(sort)
+
 
   useEffect(() => {
     if (cats.length === 0) {
-      setFilteredProducts(sortProducts(products.products, sort))
+      setFilteredProducts(sortProducts(products.products, sort)/*.slice(indexOfFItem, indexOfItem)*/)
+      setBrands(products.products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
     } else {
+      setBrands(filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
       setFilteredProducts(sortProducts(
         products.products.filter(product => cats.includes(product.category)),
         sort
-      ))
+      )/*.slice(indexOfFItem, indexOfItem)*/)
     }
+
+    const newQuery = {
+      ...router,
+      query: {
+        category: cats
+      }
+    }
+    router.push(newQuery)
   }, [cats, sort])
 
   const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
-  const brands = filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+  // const brands = filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+
+  const [brands, setBrands] = useState(products.products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
 
   return (
     <div className='my-5 pb-5 max-w-[1000px] m-auto rounded-lg flex'>
@@ -117,7 +127,7 @@ const ProductFeed = ({ products }: Props) => {
           {categories.map((category: string, i) => (
             <div key={i}>
               <input value={category} id={category} name={category} type="checkbox" onChange={handleCategoryCheck}
-                defaultChecked={checkedCategories.flat()?.filter(i => i === category).includes(category)} />
+                checked={cats.filter(i => i === category).includes(category)} />
               <span className='ml-2'>{category}</span>
             </div>
           ))}
@@ -150,7 +160,7 @@ const ProductFeed = ({ products }: Props) => {
         </div>
 
 
-        {sortProducts(filteredProducts, sort).map((product, i) => (
+        {sortProducts(paginatedProducts, sort).map((product, i) => (
           <MediumProductCard
             key={i}
             itemNo={product.id}
@@ -162,8 +172,17 @@ const ProductFeed = ({ products }: Props) => {
             thumbnail={product.thumbnail}
             title={product.title}
             description={product.description}
+            stock={product.stock}
           />
         ))}
+
+
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={filteredProducts.length}
+          paginate={paginate}
+        />
+
       </div>
     </div>
   )

@@ -1,26 +1,27 @@
+import React from 'react'
 import Head from 'next/head'
-import Header from '../Components/Header'
-import ProductFeed from '../Components/ProductFeed'
+import Header from './Header'
+import Footer from './Footer'
 
-export default function Home({ products }) {
+type Props = {
+  products,
+  children
+}
 
+const Layout = ({ products, children }: Props) => {
   return (
     <div>
       <Head>
         <title>Mitzi-shop</title>
       </Head>
-
       <Header products={products} />
-
-      <main>
-
-        <ProductFeed products={products} />
-
-      </main>
-
+      { children }
+      <Footer/>
     </div>
   )
 }
+
+export default Layout
 
 export async function getServerSideProps() {
   const products = await fetch("https://dummyjson.com/products?limit=100").
