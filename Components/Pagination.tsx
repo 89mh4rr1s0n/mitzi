@@ -17,10 +17,11 @@ const Pagination = ({ postsPerPage, totalPosts, paginate }: Props) => {
     <nav>
       <ul className='flex justify-center'>
         {pageNumbers.map(number => (
-          <li key={number} className='border m-1 rounded-sm w-5 text-center cursor-pointer hover:bg-slate-300'>
-            <a onClick={() => paginate(number)} href='!#' className='page-link'>
+          <li key={number} onClick={() => paginate(number)}
+          className='border m-1 rounded-sm w-5 text-center cursor-pointer hover:bg-slate-300' >
+            {/* <a  href='!#' className='page-link'> */}
               {number}
-            </a>
+            {/* </a> */}
           </li>
         ))}
       </ul>

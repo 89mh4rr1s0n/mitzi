@@ -22,8 +22,9 @@ export const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
+    // category reducers
     addCategory: (state, action) => {
-      state.category = [...state.category, action.payload]
+      state.category.push(action.payload)
     },
     removeCategory: (state, action) => {
       let newList = [...state.category];
@@ -34,12 +35,27 @@ export const filtersSlice = createSlice({
       state.category = []
     },
     updateCategories: (state, action) => {
-      state.category = [action.payload]
-    }
+      state.category = action.payload
+    },
+
+    // brand reducers
+    addBrand: (state, action) => {
+      state.brand.push(action.payload)
+    },
+    removeBrand: (state, action) => {
+      let newList = [...state.brand];
+      newList.splice(state.brand.indexOf(action.payload), 1)
+      state.brand = newList
+    },
   },
 })
 
-export const { addCategory, removeCategory, clearCategories, updateCategories } = filtersSlice.actions;
+export const { 
+  // category actions
+  addCategory, removeCategory, clearCategories, updateCategories,
+  // brand actions
+  addBrand, removeBrand
+ } = filtersSlice.actions;
 
 export const selectCategories = (state) => state.filters.category;
 export const selectBrands = (state) => state.filters.brand;

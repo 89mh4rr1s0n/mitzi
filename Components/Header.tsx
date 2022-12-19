@@ -29,7 +29,7 @@ const Header = ({ products }: Props) => {
     // console.log(filteredProducts);
 
     const search = (categoryName: string) => {
-        dispatch(updateCategories(categoryName))
+        dispatch(updateCategories([categoryName]))
         router.push({
             pathname: "/products",
             query: {
@@ -38,9 +38,11 @@ const Header = ({ products }: Props) => {
         })
     }
 
+
     const handleFilter = (e) => {
         setSearchWord(e.target.value)
     }
+
 
     useEffect(() => {
         if (searchWord === '') {

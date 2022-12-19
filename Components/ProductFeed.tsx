@@ -6,8 +6,13 @@ import Checkbox from './Checkbox'
 import Dropdown from './Dropdown'
 import Pagination from './Pagination'
 import { fetchProducts, selectProducts } from '../slices/productsSlice'
-import { addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters, updateCategories } from '../slices/filtersSlice'
+import { 
+  addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters, 
+  updateCategories, selectBrands, addBrand, removeBrand 
+} from '../slices/filtersSlice'
 import { useSelector, useDispatch } from "react-redux";
+import useCollapse from 'react-collapsed'
+import CheckboxFilterColumn from './CheckboxFilterColumn'
 
 type Props = {
   products
@@ -19,6 +24,8 @@ const ProductFeed = ({ products }: Props) => {
   const allProducts = useSelector(selectProducts)
   const cats = useSelector(selectCategories)
   const allFilters = useSelector(selectAllFilters)
+  const brandsArr = useSelector(selectBrands)
+
   console.log(allFilters)
   const router = useRouter()
   const [sort, setSort] = useState<string | number>('rating')
@@ -33,9 +40,10 @@ const ProductFeed = ({ products }: Props) => {
   const indexOfItem = currentPage * postsPerPage;
   const indexOfFItem = indexOfItem - postsPerPage;
   // const currentPosts = posts.slice(indexOfFItem, indexOfItem);
-  const [filteredProducts, setFilteredProducts] = useState([].slice(indexOfFItem, indexOfItem))
+  const [filteredProducts, setFilteredProducts] = useState([])
+  const [filteredProductsPaginated, setFilteredProductsPaginated] = useState([].slice(indexOfFItem, indexOfItem))
 
-  const paginatedProducts = filteredProducts.slice(indexOfFItem, indexOfItem)
+  // const paginatedProducts = filteredProducts.slice(indexOfFItem, indexOfItem)
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -46,22 +54,22 @@ const ProductFeed = ({ products }: Props) => {
   }, [])
 
 
+  console.log(router.query)
   // sort on page load if router has a category query
   useEffect(() => {
-    router.query.category ?
-      dispatch(updateCategories([router.query.category])) :
+    if (router.query.category) {
+      if (typeof (router.query.category) === 'string') {
+        dispatch(updateCategories([router.query.category]))
+      } else {
+        dispatch(updateCategories(router.query.category))
+      }
+    } else {
       dispatch(clearCategories())
+    }
   }, [])
 
   const sortProducts = (arr: [], sorting: string) => {
     if (sorting === 'priceLoToHi') {
-      // const newQuery = {
-      //   ...router,
-      //   query: {
-      //     sort: 'priceLoToHi'
-      //   }
-      // }
-      router.push(newQuery)
       return arr.sort((a, b) => a.price - b.price)
     } else if (sorting === 'priceHiToLo') {
       return arr.sort((a, b) => b.price - a.price)
@@ -77,28 +85,25 @@ const ProductFeed = ({ products }: Props) => {
     } else {
       dispatch(removeCategory(event.target.value))
     }
-    // const newQuery = {
-    //   ...router,
-    //   query: {
-    //     category: cats
-    //   }
-    // }
-    // router.push(newQuery)
   }
 
-  // console.log(sort)
+  const handleBrandCheck = (event) => {
+    if (event.target.checked) {
+      dispatch(addBrand(event.target.value))
+    } else {
+      dispatch(removeBrand(event.target.value))
+    }
+  }
 
 
   useEffect(() => {
     if (cats.length === 0) {
       setFilteredProducts(sortProducts(products.products, sort)/*.slice(indexOfFItem, indexOfItem)*/)
-      setBrands(products.products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+      // setBrands(products.products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
     } else {
-      setBrands(filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+      // setBrands(filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
       setFilteredProducts(sortProducts(
-        products.products.filter(product => cats.includes(product.category)),
-        sort
-      )/*.slice(indexOfFItem, indexOfItem)*/)
+        products.products.filter(product => cats.includes(product.category)), sort)/*.slice(indexOfFItem, indexOfItem)*/)
     }
 
     const newQuery = {
@@ -110,35 +115,48 @@ const ProductFeed = ({ products }: Props) => {
     router.push(newQuery)
   }, [cats, sort])
 
-  const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
-  // const brands = filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
 
-  const [brands, setBrands] = useState(products.products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+  const categories = products.products.map(p => p.category).reduce(function (a: string, b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+  const brands = filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+
+  // const [brands, setBrands] = useState(products.products.map(p => p.brand).reduce(function (a: string, b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
 
   return (
-    <div className='my-5 pb-5 max-w-[1000px] m-auto rounded-lg flex'>
+    <div className='my-5 px-3 pb-5 max-w-[1000px] m-auto rounded-lg flex'>
 
 
-      <div className=' min-w-[190px] px-1 mx-1 '>
+      <div className=' min-w-[190px] px-1 mx-1'>
 
         {/* categories filter checkboxes */}
-        <div className=' font-semibold my-2 mt-8 pt-4 '>Category</div>
-        <div className='bg-slate-100 rounded-lg px-1'>
-          {categories.map((category: string, i) => (
+        <div className=' font-semibold mt-6 mb-1 pt-4 '>Category</div>
+        <div className='bg-slate-100 rounded-lg px-1 py-1'>
+          {/* {categories.map((category: string, i) => (
             <div key={i}>
               <input value={category} id={category} name={category} type="checkbox" onChange={handleCategoryCheck}
                 checked={cats.filter(i => i === category).includes(category)} />
               <span className='ml-2'>{category}</span>
             </div>
-          ))}
+          ))} */}
+          <CheckboxFilterColumn
+            values={categories}
+            onChange={handleCategoryCheck}
+            checkerArr={cats}
+          />
         </div>
 
 
         {/* brand filter checkboxes */}
         <div className=' font-semibold my-2 pt-4'>Brand</div>
-        {brands.map((brand: string, i) => (
+        {/* {brands.map((brand: string, i) => (
           <Checkbox key={i} value={brand} field='brand' />
-        ))}
+        ))} */}
+        <div>
+          <CheckboxFilterColumn
+            values={brands}
+            onChange={handleBrandCheck}
+            checkerArr={brandsArr}
+          />
+        </div>
 
 
       </div>
@@ -160,7 +178,7 @@ const ProductFeed = ({ products }: Props) => {
         </div>
 
 
-        {sortProducts(paginatedProducts, sort).map((product, i) => (
+        {sortProducts(filteredProducts, sort).slice(indexOfFItem, indexOfItem).map((product, i) => (
           <MediumProductCard
             key={i}
             itemNo={product.id}
