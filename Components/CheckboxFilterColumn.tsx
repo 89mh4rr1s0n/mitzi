@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import useCollapse from 'react-collapsed'
+import {
+  ChevronDownIcon,
+} from "@heroicons/react/outline";
 
 type Props = {
   values: [],
@@ -36,12 +39,14 @@ const CheckboxFilterColumn = ({ values, onChange, checkerArr }: Props) => {
 
       </section>
 
-      <button className='text-center w-full hover:underline text-sm'
+      <button className='text-center w-full hover:underline text-sm rounded-md border-zinc-300
+      flex items-end justify-center border mt-1'
         {...getToggleProps({
           onClick: () => setExpanded((prevExpanded) => !prevExpanded),
         })}
       >
         {isExpanded ? 'Show Less' : 'Show More'}
+        <span><ChevronDownIcon className={`h-4 ${isExpanded && 'rotate-180'} transition-all duration-400`} /></span>
       </button>
 
     </>}

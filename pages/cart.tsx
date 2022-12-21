@@ -7,8 +7,14 @@ import { selectProducts, fetchProducts } from '../slices/productsSlice';
 import { useEffect } from 'react'
 import { useSession } from 'next-auth/react';
 import Currency from 'react-currency-formatter';
-
+import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/router'
+import axios from 'axios';
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
 
 export default function Home(/*{ products }*/) {
 
@@ -18,6 +24,24 @@ export default function Home(/*{ products }*/) {
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
   const { data: session, status } = useSession()
+
+  const createCheckoutSession = async () => {
+    const stripe = await stripePromise;
+    const checkoutSession = await axios.post('/api/checkout_session',
+      {
+        items,
+        email: session.user.email
+      })
+
+    // redirect user to stripe checkout
+    const result = await stripe?.redirectToCheckout({
+      sessionId: checkoutSession.data.id
+    })
+
+    if (result?.error) {
+      alert(result.error.message)
+    }
+  }
 
   useEffect(() => {
     if (products.length === 0) {
@@ -81,6 +105,8 @@ export default function Home(/*{ products }*/) {
               </h2>
 
               <button
+                role="link"
+                onClick={createCheckoutSession}
                 className={`bg-theme-blue font-medium rounded-md hover:bg-theme-red text-white py-2 mx-4  
                 ${!session && 'bg-gray-300 text-black hover:bg-gray-400 cursor-not-allowed'}`}>
 
