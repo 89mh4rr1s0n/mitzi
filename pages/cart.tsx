@@ -25,6 +25,8 @@ export default function Home(/*{ products }*/) {
   const total = useSelector(selectTotal);
   const { data: session, status } = useSession()
 
+  console.log(items)
+
   const createCheckoutSession = async () => {
     const stripe = await stripePromise;
     const checkoutSession = await axios.post('/api/checkout_session',

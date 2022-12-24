@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 type Props = {}
 
-const success = (props: Props) => {
+const Success = (props: Props) => {
 
   const router = useRouter()
 
@@ -13,7 +13,7 @@ const success = (props: Props) => {
     <div>
       {/* <Header /> */}
 
-      <main className='max-w-[1000px] mx-auto m-4 p-10'>
+      <main className='max-w-[800px] mx-auto m-4 p-10'>
         <div>
 
           <div className='flex items-center space-x-2'>
@@ -39,4 +39,4 @@ const success = (props: Props) => {
   )
 }
 
-export default success
+export default Success

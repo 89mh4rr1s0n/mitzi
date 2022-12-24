@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       product_data: {
         description: item.description,
         name: item.title,
-        images: [item.images[item.images.length -1]]
+        images: [item.thumbnail]
       }
     },
     quantity: item.quantity,
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     cancel_url: `${process.env.HOST}/checkout`,
     metadata: {
       email,
-      // images: JSON.stringify(items.map((item) => item.images))
+      images: JSON.stringify(items.map((item) => item.thumbnail)) // error is here
     }
   })
 
