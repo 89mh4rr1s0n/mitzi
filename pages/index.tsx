@@ -68,7 +68,7 @@ export default function Home(/*{ products }*/) {
 
       </main>
 
-      <Footer/>
+      {/* <Footer/> */}
 
     </div>
   )

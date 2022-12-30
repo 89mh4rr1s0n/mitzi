@@ -9,7 +9,7 @@ const Homefeed2 = ({ products, title }: Props) => {
   const [scrolEnd, setscrolEnd] = useState(false);
   const [arrowsVisible, setArrowsVisible] = useState(false)
 
-  Math.easeInOutQuad = function (t, b, c, d) {
+  Math.easeInOutQuad = function (t: number, b: number, c: number, d: number) {
     t /= d / 2;
     if (t < 1) return c / 2 * t * t + b;
     t--;
@@ -100,7 +100,7 @@ const Homefeed2 = ({ products, title }: Props) => {
 
           {/* items */}
           <div className="flex overflow-x-scroll scrollbar-thin
-          scrollbar-thumb-theme-red pb-2 mx-7" ref={scrl} onScroll={scrollCheck}>
+          scrollbar-thumb-theme-red pb-2 mx-0" ref={scrl} onScroll={scrollCheck}>
             {products.map((product, i) => (
               <SmallProductCard
                 key={i}

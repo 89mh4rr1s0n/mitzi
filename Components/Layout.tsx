@@ -4,19 +4,19 @@ import Header from './Header'
 import Footer from './Footer'
 
 type Props = {
-  products,
-  children
+  // products,
+  children: any
 }
 
-const Layout = ({ products, children }: Props) => {
+const Layout = ({ /*products,*/ children }: Props) => {
   return (
     <div>
       <Head>
         <title>Mitzi-shop</title>
       </Head>
-      <Header products={products} />
-      { children }
-      <Footer/>
+      {/* <Header products={products} /> */}
+      {children}
+      <Footer />
     </div>
   )
 }

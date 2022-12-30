@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Footer from '../../Components/Footer'
 import Header from '../../Components/Header'
 import ProductFeed from '../../Components/ProductFeed'
 
@@ -19,7 +18,6 @@ export default function Home({ products }) {
 
       </main>
 
-      <Footer/>
 
     </div>
   )

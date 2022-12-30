@@ -4,7 +4,7 @@ import Currency from 'react-currency-formatter'
 import Image from 'next/image'
 
 type Props = {
-  id: number,
+  id: string,
   amount: number,
   amountShipping: number,
   items: [],
@@ -13,13 +13,12 @@ type Props = {
 }
 
 const Order = ({ id, amount, amountShipping, items, timestamp, images }: Props) => {
-  console.log(items)
   return (
     <div className='border rounded-md'>
 
-      <div className='flex justify-between bg-zinc-100 text-sm space-x-5'>
+      <div className='flex justify-between bg-zinc-100 text-xs space-x-5 sm:space-x-3 px-4 py-2'>
 
-        <div className='flex space-x-10'>
+        <div className='flex space-x-5 sm:space-x-10 md:space-x-16'>
           <div>
             <p>ORDER PLACED</p>
             <p>{moment.unix(timestamp).format('DD MMM YYYY')}</p>
@@ -34,16 +33,19 @@ const Order = ({ id, amount, amountShipping, items, timestamp, images }: Props) 
           </div>
         </div>
 
-        <div className='self-end text-end'>
-          <p>Order # {id}</p>
-          <p>{items.length} items</p>
+        <div className='w-40 whitespace-nowrap text-right'>
+          <div className='flex flex-col sm:flex-row'>
+            <p className=''>Order #</p>
+            <p className=''>{id.slice(0,20)}</p>
+          </div>
+          <p className='text-blue-500'>{items.length} items</p>
         </div>
 
       </div>
 
 
       <div>
-        <div className='flex space-x-4 overflow-x-auto'>
+        <div className='flex space-x-4 overflow-x-scroll scrollbar-thin scrollbar-thumb-theme-red  px-4 py-2'>
           {images.map((image: string, i: number) => (
             <Image
               key={i}

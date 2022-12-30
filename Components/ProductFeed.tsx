@@ -6,9 +6,9 @@ import Checkbox from './Checkbox'
 import Dropdown from './Dropdown'
 import Pagination from './Pagination'
 import { fetchProducts, selectProducts } from '../slices/productsSlice'
-import { 
-  addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters, 
-  updateCategories, selectBrands, addBrand, removeBrand 
+import {
+  addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters,
+  updateCategories, selectBrands, addBrand, removeBrand
 } from '../slices/filtersSlice'
 import { useSelector, useDispatch } from "react-redux";
 import useCollapse from 'react-collapsed'
@@ -30,7 +30,6 @@ const ProductFeed = ({ products }: Props) => {
   const router = useRouter()
   const [sort, setSort] = useState<string | number>('rating')
   const [checkedCategories, setCheckecCategories] = useState([router.query.category])
-  console.log(cats)
   // console.log(cats)
 
   console.log(router.query)
