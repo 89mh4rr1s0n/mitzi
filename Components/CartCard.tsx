@@ -7,7 +7,7 @@ import {
   MinusIcon,
 } from "@heroicons/react/outline";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash} from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { decreaseQuantity, addToCart, changeQuantity } from '../slices/cartSlice'
 import { useDispatch } from 'react-redux'
 
@@ -22,7 +22,9 @@ type Props = {
   thumbnail: string,
   title: string,
   description: string,
-  quantity: number
+  quantity: number,
+  deletedItems: [],
+  setDeletedItems: React.Dispatch<React.SetStateAction<Object[]>>
 }
 
 const CartCard = ({
@@ -37,6 +39,8 @@ const CartCard = ({
   title,
   description,
   quantity,
+  deletedItems,
+  setDeletedItems
 }: Props) => {
 
   const router = useRouter()
@@ -53,8 +57,7 @@ const CartCard = ({
     stock,
     brand,
     category,
-    thumbnail,
-    // images
+    thumbnail
   }
 
   const addItemToCart = () => {
@@ -64,10 +67,25 @@ const CartCard = ({
 
   const removeItem = () => {
     dispatch(decreaseQuantity(product))
+    if (quantity === 1) {
+      setDeletedItems([...deletedItems, product])
+    }
   }
 
   return (
-    <div className='flex p-5 py-2 my-3 rounded-lg shadow-md'>
+    <div className={`flex p-5 py-2 my-3 rounded-lg shadow-md`}>
+
+      <style jsx>{`
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+
+            input[type=number] {
+              -moz-appearance: textfield;
+            }
+          `}</style>
 
 
       {/* left side with image */}
@@ -108,19 +126,19 @@ const CartCard = ({
 
             <div className=' text-white rounded-l-md p-1 cursor-pointer hover:bg-theme-red 
             bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={removeItem}>
-              {quantity === 1 ? 
-              <FontAwesomeIcon icon={faTrash} className='h-4 flex-grow w-[24px]' /> :
-              <MinusIcon className='h-6  flex-grow p-1' />
+              {quantity === 1 ?
+                <FontAwesomeIcon icon={faTrash} className='h-4 flex-grow w-[24px]' /> :
+                <MinusIcon className='h-6  flex-grow p-1' />
               }
             </div>
 
             <input type='number' value={quantity} min={1} max={stock}
-              onChange={e => parseInt(e.target.value) < stock &&  dispatch(changeQuantity({ item: product, value: parseInt(e.target.value) }))}
+              onChange={e => parseInt(e.target.value) < stock && dispatch(changeQuantity({ item: product, value: parseInt(e.target.value) }))}
               className='w-8 text-center border-y focus:outline-none'>
             </input>
 
             <div className=' text-white rounded-r-md p-1 cursor-pointer hover:bg-theme-red 
-            bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={quantity < stock && addItemToCart}>
+            bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={quantity < stock ? addItemToCart : () => console.log('')}>
               <PlusIcon className='h-6  flex-grow p-1' />
             </div>
 

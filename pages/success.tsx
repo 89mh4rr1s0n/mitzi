@@ -1,17 +1,26 @@
-import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react'
 import Header from '../Components/Header'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
+import { clearCart, selectItems } from '../slices/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 type Props = {}
 
-const Success = (props: Props) => {
+const Success = ({ products }) => {
 
   const router = useRouter()
+  const dispatch = useDispatch()
+  const cart = useSelector(selectItems)
+
+  useEffect(() => {
+    dispatch(clearCart(cart))
+  }, [])
 
   return (
     <div>
-      {/* <Header /> */}
+      <Header products={products} />
 
       <main className='max-w-[800px] mx-auto m-4 p-10'>
         <div>
@@ -28,7 +37,8 @@ const Success = (props: Props) => {
 
           <div className='flex justify-center'>
             <button onClick={() => router.push('/orders')}
-              className={`bg-theme-blue font-medium rounded-md hover:bg-theme-red text-white mt-4 py-2 w-full`}>
+              className={`bg-theme-blue font-medium rounded-md hover:bg-theme-red text-white 
+              mt-4 py-2 w-full transition-all duration-200`}>
               My Orders
             </button>
           </div>
@@ -40,3 +50,14 @@ const Success = (props: Props) => {
 }
 
 export default Success
+
+export async function getServerSideProps(context: any) {
+  const products = await fetch("https://dummyjson.com/products?limit=100")
+  const productsJson = await products.json()
+
+  return {
+    props: {
+      products: productsJson,
+    }
+  }
+}

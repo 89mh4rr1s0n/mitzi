@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import useCollapse from 'react-collapsed'
-import {
-  ChevronDownIcon,
-} from "@heroicons/react/outline";
+import { ChevronDownIcon } from "@heroicons/react/outline";
 
 type Props = {
   values: [],

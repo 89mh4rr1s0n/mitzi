@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { RootState } from '../store'
 
 export interface FiltersState {
   search: string,
   brand: string[],
   category: string[],
-  price: number,
+  minPrice: number,
+  maxPrice: number,
   rating: number,
   sort: string
 }
@@ -13,7 +15,8 @@ const initialState: FiltersState = {
   search: '',
   brand: [],
   category: [],
-  price: 0,
+  minPrice: 0,
+  maxPrice: 0,
   rating: 0,
   sort: ''
 }
@@ -47,6 +50,14 @@ export const filtersSlice = createSlice({
       newList.splice(state.brand.indexOf(action.payload), 1)
       state.brand = newList
     },
+
+    // price reducers
+    updateMinPrice: (state, action) => {
+      state.minPrice = action.payload
+    },
+    updateMaxPrice: (state, action) => {
+      state.maxPrice = action.payload
+    },
   },
 })
 
@@ -54,12 +65,18 @@ export const {
   // category actions
   addCategory, removeCategory, clearCategories, updateCategories,
   // brand actions
-  addBrand, removeBrand
+  addBrand, removeBrand,
+  // price actions
+  updateMinPrice, updateMaxPrice,
  } = filtersSlice.actions;
 
-export const selectCategories = (state) => state.filters.category;
-export const selectBrands = (state) => state.filters.brand;
-export const selectRating = (state) => state.filters.rating;
-export const selectAllFilters = (state) => state.filters
+
+// selectors
+export const selectCategories = (state: RootState) => state.filters.category;
+export const selectBrands = (state: RootState) => state.filters.brand;
+export const selectRating = (state: RootState) => state.filters.rating;
+export const selectMinPrice = (state: RootState) => state.filters.minPrice;
+export const selectMaxPrice = (state: RootState) => state.filters.maxPrice;
+export const selectAllFilters = (state: RootState) => state.filters;
 
 export default filtersSlice.reducer

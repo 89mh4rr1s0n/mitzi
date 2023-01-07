@@ -20,7 +20,7 @@ type Props = {
   category: string
 }
 
-const MediumProductCard = ({ 
+const MediumProductGridCard = ({ 
   brand, 
   discount, 
   price, 
@@ -64,11 +64,10 @@ const MediumProductCard = ({
   }
 
   return (
-    <div className='flex my-5 py-2 shadow-lg rounded-lg'>
-
+    <div className=' my-5 py-2 shadow-lg rounded-lg mr-2 max-w-[225px] flex flex-col'>
 
       {/* left side with image */}
-      <div className='relative hover:bg-black/5 z-10 flex items-center content-center rounded-lg hover:brightness-95'
+      <div className='relative hover:bg-black/5 z-10 flex items-center justify-center content-center rounded-lg hover:brightness-95 h-52'
         onMouseEnter={() => setImageHover(true)}
         onMouseLeave={() => setImageHover(false)}>
         <Image
@@ -92,7 +91,7 @@ const MediumProductCard = ({
 
 
       {/* right side */}
-      <div className=' flex flex-col justify-between 
+      <div className=' flex flex-col justify-between
       ml-2 mt-1'>
         <div className='pr-3'>
           <div className=' font-bold text-lg hover:text-theme-red hover:cursor-pointer line-clamp-1'>{`${brand} ${title}`}</div>
@@ -122,4 +121,4 @@ const MediumProductCard = ({
   )
 }
 
-export default MediumProductCard
+export default MediumProductGridCard

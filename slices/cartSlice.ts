@@ -81,11 +81,14 @@ export const cartSlice = createSlice({
         (item) => item.id === action.payload.item.id
       );
       state.items[itemIndex].quantity = action.payload.value;
-    }
+    },
+    clearCart: (state, action) => {
+      state.items = []
+    },
   },
 });
 
-export const { addToCart, removeFromCart, decreaseQuantity, changeQuantity } = cartSlice.actions;
+export const { addToCart, removeFromCart, decreaseQuantity, changeQuantity, clearCart } = cartSlice.actions;
 
 export const selectItems = (state: { cart: FiltersState }) => state.cart.items;
 export const selectTotal = (state) => 

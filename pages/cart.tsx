@@ -2,21 +2,23 @@ import Header from '../Components/Header';
 import Head from 'next/head';
 import CartCard from '../Components/CartCard';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectItems, selectTotal } from '../slices/cartSlice';
+import { selectItems, selectTotal, addToCart } from '../slices/cartSlice';
 import { selectProducts, fetchProducts } from '../slices/productsSlice';
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react';
 import Currency from 'react-currency-formatter';
 import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/router'
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
 
-export default function Home(/*{ products }*/) {
+export default function Cart(/*{ products }*/) {
 
   const dispatch = useDispatch()
 
@@ -25,7 +27,9 @@ export default function Home(/*{ products }*/) {
   const total = useSelector(selectTotal);
   const { data: session, status } = useSession()
 
-  console.log(items)
+  const [deletedItems, setDeletedItems] = useState([])
+
+  console.log(deletedItems)
 
   const createCheckoutSession = async () => {
     const stripe = await stripePromise;
@@ -43,6 +47,11 @@ export default function Home(/*{ products }*/) {
     if (result?.error) {
       alert(result.error.message)
     }
+  }
+
+  const restoreItem = (product) => {
+    dispatch(addToCart(product))
+    setDeletedItems(deletedItems.filter((items) => product.id !== items.id))
   }
 
   useEffect(() => {
@@ -75,6 +84,23 @@ export default function Home(/*{ products }*/) {
         <div className=' bg-white rounded-lg m-5'>
           <div className='text-2xl font-semibold m-5'>Shopping Basket</div>
 
+          {items.length === 0 && 
+          <p className='ml-5'>Your Shopping Basket is empty</p>
+          }
+
+          {deletedItems.map((item, i) => (
+            <div
+              key={i}
+              className='ml-5 bg-slate-200 px-2 py-1 my-1 rounded-[4px] flex justify-between text-sm'>
+              <div className='mr-2'>
+                <span className='text-blue-500'>{`${item.brand} ${item.title}`}</span> was removed from your shopping basket
+              </div>
+              <button className='border border-slate-400 px-1 hover:bg-slate-300 rounded-[4px]' onClick={() => restoreItem(item)}>
+                <FontAwesomeIcon icon={faRotateLeft} className='mr-1 mb-[1px] h-[14px]' />Undo
+              </button>
+            </div>
+          ))}
+
           {items.map((item, i) => (
             <CartCard
               key={i}
@@ -89,6 +115,8 @@ export default function Home(/*{ products }*/) {
               discountPercentage={item.discountPercentage}
               brand={item.brand}
               quantity={item.quantity}
+              deletedItems={deletedItems}
+              setDeletedItems={setDeletedItems}
             />
           ))}
         </div>

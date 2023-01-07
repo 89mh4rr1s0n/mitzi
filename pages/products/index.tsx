@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Header from '../../Components/Header'
 import ProductFeed from '../../Components/ProductFeed'
 
-export default function Home({ products }) {
+export default function Home({ products, filteredProducts }) {
 
   return (
     <div>
@@ -14,7 +14,7 @@ export default function Home({ products }) {
 
       <main>
 
-        <ProductFeed products={products} />
+        <ProductFeed products={filteredProducts} searchedProducts={filteredProducts} />
 
       </main>
 
@@ -23,15 +23,35 @@ export default function Home({ products }) {
   )
 }
 
-export async function getServerSideProps() {
-  const products = await fetch("https://dummyjson.com/products?limit=100").
-    then(
-      (res) => res.json()
+// export async function getServerSideProps() {
+//   const products = await fetch("https://dummyjson.com/products?limit=100").
+//     then(
+//       (res) => res.json()
+//     )
+
+//   return {
+//     props: {
+//       products,
+//     }
+//   }
+// }
+
+export async function getServerSideProps(context: any) {
+  const products = await fetch("https://dummyjson.com/products?limit=100")
+  const productsJson = await products.json()
+  let filteredProducts = productsJson.products
+  if (context.query.search !== undefined) {
+    filteredProducts = productsJson.products.filter(product =>
+      product.title.toLowerCase().includes(context.query.search.toLowerCase()) ||
+      product.description.toLowerCase().includes(context.query.search.toLowerCase()) ||
+      product.brand.toLowerCase().includes(context.query.search.toLowerCase())
     )
+  }
 
   return {
     props: {
-      products,
+      products: productsJson,
+      filteredProducts
     }
   }
 }

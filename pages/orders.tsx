@@ -15,7 +15,7 @@ const Orders = ({ orders, products }) => {
 
   return (
     <div>
-      {/* <Header/> */}
+      <Header products={products}/>
       <main className='max-w-screen-lg mx-auto p-10'>
         <h1 className='text-2xl font-semibold border-b mb-2 pb-1 border-theme-blue'>
           Your Orders

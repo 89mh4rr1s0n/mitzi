@@ -59,7 +59,7 @@ const LargeProductCard = ({
   }
 
   return (
-    <div className='m-auto max-w-[850px] flex mt-6'>
+    <div className='m-auto max-w-[850px] flex my-6'>
       <ToastContainer
         autoClose={1400}
       />
@@ -67,7 +67,7 @@ const LargeProductCard = ({
 
       <div>
         {images.slice(0).reverse().map((image, i) => (
-          <div key={i} className='my-3 mx-5 h-[50px] w-[50px] justify-center 
+          <div key={i} className='my-3 mx-5 h-[50px] w-[50px] max-h-[50px] max-w-[50px] justify-center 
                 flex items-center content-center cursor-pointer'
             onMouseEnter={() => setActiveImage(image)}>
             <Image
@@ -75,22 +75,12 @@ const LargeProductCard = ({
               height={50}
               width={50}
               alt=''
-              className={`shadow-md rounded-md ${image === activeImage && ' border-theme-red border-2'/*'shadow-[0px_0px_10px_rgba(210,42,40,1)]'*/}`}
+              className={`shadow-md rounded-md my-2 max-h-[56px] ${image === activeImage && ' border-theme-red border-2'}`}
             />
           </div>
         ))}
       </div>
 
-      {/* main image */}
-      {/* <div className='rounded-lg flex items-center content-center'>
-        <Image
-          src={activeImage}
-          height={300}
-          width={300}
-          alt=''
-          className=' object-contain rounded-lg'
-        />
-      </div> */}
       <div className='flex items-center content-center justify-center object-contain z-20'>
         <ReactImageMagnify {...{
           smallImage: {

@@ -33,7 +33,7 @@ const CategoryCard = ({ images, categoryName }: Props) => {
             view all
           </div>
         </div>}
-      <div className='text-white text-center pb-4'>{categoryName.toUpperCase()}</div>
+      <div className=' text-center pb-2'>{categoryName.toUpperCase()}</div>
       <div className='grid grid-cols-2 h-[200px] max-w-[250px] bg-white cursor-pointer rounded-lg m-auto'>
         {images.map((image, i) => (
           <div key={i}

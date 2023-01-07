@@ -28,7 +28,7 @@ export default async function handler(req, res) {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: { amount: 299, currency: 'gbp' },
-          display_name: 'standerd shipping',
+          display_name: 'standard shipping',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 7 },
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     line_items: transformedItems,
     mode: 'payment',
     success_url: `${process.env.HOST}/success`,
-    cancel_url: `${process.env.HOST}/checkout`,
+    cancel_url: `${process.env.HOST}/cart`,
     metadata: {
       email,
       images: JSON.stringify(items.map((item) => item.thumbnail)) // error is here
