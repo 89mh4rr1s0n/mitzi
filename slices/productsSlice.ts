@@ -1,24 +1,31 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector, AnyAction } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { Product, ProductData } from '../typings'
+
 
 const productsUrl = "https://dummyjson.com/products?limit=100"
 
 export interface ProductsState {
-  products: [],
+  products: ProductData,
   isLoading: boolean,
   hasError: boolean
 }
 
 const initialState: ProductsState = {
-  products: [],
+  products: {
+    limit: 0,
+    products: [],
+    skip: 1,
+    total: 1
+  },
   isLoading: false,
   hasError: false
 }
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await axios.get(productsUrl)
-  // return response.data.products
-  return response.data
+  const data:ProductData = response.data
+  return data
 })
 
 export const productsSlice = createSlice({
@@ -44,20 +51,20 @@ export const productsSlice = createSlice({
 })
 
 
-export const selectProducts = (state) => state.products.products;
-export const selectStatus = (state) => state.products.isLoading;
-export const selectError = (state) => state.products.hasError;
+export const selectProducts = (state: { products: { products: any } }) => state.products.products;
+export const selectStatus = (state: { products: { isLoading: any } }) => state.products.isLoading;
+export const selectError = (state: { products: { hasError: any } }) => state.products.hasError;
 
 export const selectCategories = createSelector(selectProducts, (a) => {
-  return a.products?.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
+  return a.products?.map((p:Product) => p.category).reduce(function (a:Product[], b:Product) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
 })
 
 export const selectMostDiscounted = createSelector(selectProducts, (a) => {
-  return a.products?.slice().sort((a, b) => b.discountPercentage - a.discountPercentage).slice(0, 10)
+  return a.products?.slice().sort((a:Product, b:Product) => b.discountPercentage - a.discountPercentage).slice(0, 10)
 })
 
 export const selectTopRated = createSelector(selectProducts, (a) => {
-  return a.products?.slice().sort((a, b) => b.rating - a.rating).slice(0, 10)
+  return a.products?.slice().sort((a:Product, b:Product) => b.rating - a.rating).slice(0, 10)
 })
 
 export default productsSlice.reducer

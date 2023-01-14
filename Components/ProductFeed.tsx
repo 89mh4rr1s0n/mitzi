@@ -19,58 +19,40 @@ import PriceRangeSlider from './PriceRangeSlider'
 import { faBars, faGripVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import MediumProductGridCard from './MediumProductGridCars'
+import { Product, Sortings } from '../typings'
+import { AppDispatch } from '../store'
 
 type Props = {
-  products,
-  searchedProducts
+  products: Product[],
+  searchedProducts: Product[]
 }
 
+type Fields = "brand" | "category" | "description";
+type Display = 'bars' | 'grid'
+
 const ProductFeed = ({ products, searchedProducts }: Props) => {
-
-  const dispatch = useDispatch()
-  const allProducts = useSelector(selectProducts)
-  const cats = useSelector(selectCategories)
-  const allFilters = useSelector(selectAllFilters)
-  const brandsArr = useSelector(selectBrands)
-  const minPrice = useSelector(selectMinPrice)
-  const maxPrice = useSelector(selectMaxPrice)
+  
   const router = useRouter()
-  const [sort, setSort] = useState<string>('rating')
-  const [checkedCategories, setCheckecCategories] = useState([router.query.category])
-  // console.log(cats)
-
-  const [display, setDisplay] = useState('bars')
-
-  // console.log(router.query)
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const dispatch = useDispatch<AppDispatch>()
+  const cats = useSelector(selectCategories)
+  const brandsArr = useSelector(selectBrands)
+  const [sort, setSort] = useState<Sortings>('rating')
+  
+  const [categories, setCategories] = useState(products.map(p => p.category).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+  const [brands, setBrands] = useState(products.filter(product => cats.includes(product.category)).map(p => p.brand).sort())
+  const [display, setDisplay] = useState<Display>('bars')
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [postsPerPage] = useState<number>(10);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   const indexOfItem = currentPage * postsPerPage;
   const indexOfFItem = indexOfItem - postsPerPage;
-
-  console.log(currentPage)
-
-  // const currentPosts = posts.slice(indexOfFItem, indexOfItem);
-
-  const [filteredProducts, setFilteredProducts] = useState([])
-  const [filteredProductsPaginated, setFilteredProductsPaginated] = useState([].slice(indexOfFItem, indexOfItem))
+  
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products)
 
   const [min, setMin] = useState(Math.min(...products.map((i) => i.price)))
   const [max, setMax] = useState(Math.max(...products.map((i) => i.price)))
   const [rating, setRating] = useState(0)
   const [value, setValue] = useState<number[]>([min, max]);
-  // const paginatedProducts = filteredProducts.slice(indexOfFItem, indexOfItem)
-  // console.log(value)
-  // console.log(Math.max(...filteredProducts.map((i) => i.price)))
-  // console.log(Math.min(...filteredProducts.map((i) => i.price)))
-
-
-  useEffect(() => {
-    // if(allProducts === []){
-    dispatch(fetchProducts())
-    // }
-  }, [])
-
 
   // sort on page load if router has a category query
   useEffect(() => {
@@ -85,17 +67,17 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
     }
   }, [])
 
-  const sortProducts = (arr: [], sorting: string) => {
+  const sortProducts = (arr: Product[], sorting: Sortings):Product[] => {
     if (sorting === 'priceLoToHi') {
       return arr.sort((a, b) => a.price - b.price)
     } else if (sorting === 'priceHiToLo') {
       return arr.sort((a, b) => b.price - a.price)
-    } else if (sorting === 'rating') {
+    } else {
       return arr.sort((a, b) => b.rating - a.rating)
-    }
+    } 
   }
 
-  const handleCategoryCheck = (event) => {
+  const handleCategoryCheck = (event: { target: { checked: boolean; value: string } }) => {
     if (event.target.checked) {
       dispatch(addCategory(event.target.value))
     } else {
@@ -103,7 +85,7 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
     }
   }
 
-  const handleBrandCheck = (event) => {
+  const handleBrandCheck = (event: { target: { checked: boolean; value: string } }) => {
     if (event.target.checked) {
       dispatch(addBrand(event.target.value))
     } else {
@@ -111,30 +93,30 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
     }
   }
 
-  const handleCheckboxFilter = (arr: [], filterArr: [], field: string) => {
+  const handleCheckboxFilter = (arr: Product[], filterArr: string[], field: Fields) => {
     if (filterArr.length === 0) {
       return sortProducts(arr, sort)
     } else {
-      return sortProducts(arr.filter(product => filterArr.includes(product[`${field}`])), sort)
+      return sortProducts(arr.filter(product => filterArr.includes(product[field])), sort)
     }
   }
 
-  const handlePriceFilter = (arr) => {
+  const handlePriceFilter = (arr: Product[]) => {
     return arr.filter(item => item.price >= value[0] && item.price <= value[1])
   }
 
-  // useEffect(()=>{
-  //   setCurrentPage(1)
-  // }, [router.query])
+  useEffect(()=>{
+    setCurrentPage(1)
+  }, [router.query])
 
   useEffect(() => {
-    let categoryFilteredProducts = handleCheckboxFilter(products, cats, 'category') // invokes category filter
-    let brandAndCategoryFilteredProducts = handleCheckboxFilter(categoryFilteredProducts, brandsArr, 'brand') // invokes brand fillter
-    let brandCategoryAndRatingFilteredProducts = brandAndCategoryFilteredProducts.filter(item => item.rating > rating) // invokes rating filter
-    let brandCategoryRatingAndPriceFilteredProducts = handlePriceFilter(brandCategoryAndRatingFilteredProducts) // invokes price filter
+    let categoryFilteredProducts: Product[] = handleCheckboxFilter(products, cats, 'category') // invokes category filter
+    let brandAndCategoryFilteredProducts: any = handleCheckboxFilter(categoryFilteredProducts, brandsArr, 'brand') // invokes brand fillter
+    let brandCategoryAndRatingFilteredProducts = brandAndCategoryFilteredProducts.filter((item:Product) => item.rating > rating) // invokes rating filter
+    let brandCategoryRatingAndPriceFilteredProducts: Product[] = handlePriceFilter(brandCategoryAndRatingFilteredProducts) // invokes price filter
     setFilteredProducts(brandCategoryRatingAndPriceFilteredProducts)
-    setMin(Math.min(...brandAndCategoryFilteredProducts.map((i) => i.price)))
-    setMax(Math.max(...brandAndCategoryFilteredProducts.map((i) => i.price)))
+    setMin(Math.min(...brandAndCategoryFilteredProducts.map((i:Product) => i.price)))
+    setMax(Math.max(...brandAndCategoryFilteredProducts.map((i:Product) => i.price)))
     setCurrentPage(1)
 
     // const newQuery = {
@@ -146,28 +128,29 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
     // router.push(newQuery)
   }, [cats, brandsArr, sort, value, rating, router.query])
 
-  const categories = products.map(p => p.category).reduce(function (a: string, b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
-  // const brands = filteredProducts.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
-  // const brands = products.filter(product => cats.includes(product.category)).map(p => p.brand).sort()
-
-
-  const [brands, setBrands] = useState(products.filter(product => cats.includes(product.category)).map(p => p.brand).sort())
-  console.log(cats)
 
   useEffect(() => {
     if (cats.length === 0) {
-      setBrands(products.map(p => p.brand).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+      setBrands(products.map(p => p.brand).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
     } else {
       setBrands(products.filter(product => cats.includes(product.category)).map(p => p.brand).sort())
     }
   }, [cats, router.query])
 
   useEffect(() => {
+    if (brandsArr.length === 0) {
+      setCategories(products.map(p => p.category).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+    } else {
+      setCategories(products.filter(product => brandsArr.includes(product.brand)).map(p => p.category).sort())
+    }
+  }, [brandsArr, router.query])
+
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage])
 
   return (
-    <div className='my-5 px-3 pb-5 max-w-[1200px] m-auto rounded-lg flex justify-center'>
+    <div className='my-5 px-3 pb-5 max-w-[1200px] m-auto rounded-lg flex flex-grow justify-center'>
 
 
       {/* filter panel column */}
@@ -175,7 +158,7 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
 
         {/* categories filter checkboxes */}
         <div className=' font-semibold mt-6 mb-1 pt-4 '>Category</div>
-        <div className='bg-slate-100 rounded-lg px-1 py-1'>
+        <div>
           <CheckboxFilterColumn
             values={categories}
             onChange={handleCategoryCheck}
@@ -217,7 +200,7 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
                 onChange={() => setRating(value)}
                 checked={rating === value}
               />
-              <label for={value} className='flex items-center'>
+              <label htmlFor={value.toString()} className='flex items-center'>
                 <Rating
                   name="customer-rating"
                   value={value}
@@ -234,10 +217,10 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
 
       </div>
 
-      <div>
+      <div className='flex-grow'>
 
         {/* top row of feed with sorting dropdown */}
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-center flex-grow'>
           <div>{`${filteredProducts.length} RESULTS FOUND`}</div>
 
           <div className=' rounded-[4px] flex item-center content-center h-[40px]'>
@@ -264,7 +247,7 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
           />
         </div>
 
-        <div className={`${display === 'grid' && 'grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
+        <div className={`${display === 'grid' && 'grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'} w-full`}>
 
           {sortProducts(filteredProducts, sort).slice(indexOfFItem, indexOfItem).map((product, i) => (
             display === 'bars' ?

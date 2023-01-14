@@ -34,7 +34,7 @@ export const filtersSlice = createSlice({
       newList.splice(state.category.indexOf(action.payload), 1)
       state.category = newList
     },
-    clearCategories: (state, action) => {
+    clearCategories: (state) => {
       state.category = []
     },
     updateCategories: (state, action) => {

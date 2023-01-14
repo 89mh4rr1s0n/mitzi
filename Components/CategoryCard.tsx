@@ -22,7 +22,7 @@ const CategoryCard = ({ images, categoryName }: Props) => {
   }
 
   return (
-    <div className='p-3 hover:bg-black/20 rounded-lg pb-10 relative'
+    <div className='p-3 hover:bg-black/10 rounded-lg pb-10 relative'
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {hover &&

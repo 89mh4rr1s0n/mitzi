@@ -1,11 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { toast } from "react-toastify";
+import { Product, CartItem } from '../typings';
 
 export interface FiltersState {
-  items: []
+  items: CartItem[]
 }
 
-const initialState = {
+const initialState: { items: CartItem[] } = {
   items: [],
 };
 
@@ -14,11 +15,11 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     //actions
-    addToCart: (state, action) => {
+    addToCart: (state, action: PayloadAction<Product>) => {
 
       // check if item is already in cart
-      const existingIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
+      const existingIndex: number = state.items.findIndex(
+        (item: CartItem) => item.id === action.payload.id
       );
 
       if (existingIndex >= 0) {
@@ -31,7 +32,6 @@ export const cartSlice = createSlice({
         });
       } else {
         let tempProductItem = { ...action.payload, quantity: 1 };
-        // state.items.push(tempProductItem);
         state.items = [...state.items, tempProductItem]
         toast.success("Product added to cart", {
           position: "bottom-left",
@@ -39,23 +39,23 @@ export const cartSlice = createSlice({
       }
 
     },
-    removeFromCart: (state, action) => {
+    removeFromCart: (state, action: PayloadAction<CartItem>) => {
       const index = state.items.findIndex(
-        (basketItem) => basketItem.id === action.payload.id)
+        (basketItem: CartItem) => basketItem.id === action.payload.id)
 
-        let newBasket = [...state.items];
+      let newBasket = [...state.items];
 
-        if (index >= 0) {
-          newBasket.splice(index, 1)
-        } else {
-          console.warn("unable to remove items from basket")
-        }
+      if (index >= 0) {
+        newBasket.splice(index, 1)
+      } else {
+        console.warn("unable to remove items from basket")
+      }
 
-        state.items = newBasket
+      state.items = newBasket
     },
-    decreaseQuantity(state, action) {
+    decreaseQuantity(state, action: PayloadAction<CartItem>) {
       const itemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
+        (item: CartItem) => item.id === action.payload.id
       );
 
       if (state.items[itemIndex].quantity > 1) {
@@ -66,7 +66,7 @@ export const cartSlice = createSlice({
         });
       } else if (state.items[itemIndex].quantity === 1) { // then remove item from cart
         const nextCartItems = state.items.filter(
-          (item) => item.id !== action.payload.id
+          (item: CartItem) => item.id !== action.payload.id
         );
 
         state.items = nextCartItems;
@@ -78,7 +78,7 @@ export const cartSlice = createSlice({
     },
     changeQuantity(state, action) {
       const itemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.item.id
+        (item: CartItem) => item.id === action.payload.item.id
       );
       state.items[itemIndex].quantity = action.payload.value;
     },
@@ -91,7 +91,7 @@ export const cartSlice = createSlice({
 export const { addToCart, removeFromCart, decreaseQuantity, changeQuantity, clearCart } = cartSlice.actions;
 
 export const selectItems = (state: { cart: FiltersState }) => state.cart.items;
-export const selectTotal = (state) => 
-  state.cart.items.reduce((total, item) => total + (item.price * item.quantity) , 0);
+export const selectTotal = (state: { cart: FiltersState }) =>
+  state.cart.items.reduce((total, item: CartItem) => total + (item.price * item.quantity), 0);
 
 export default cartSlice.reducer;

@@ -1,29 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Slider from "@mui/material/Slider";
 import MuiInput from "@mui/material/Input";
-import { useSelector, useDispatch } from "react-redux";
-import { updateMinPrice, updateMaxPrice, selectMinPrice, selectMaxPrice } from "../slices/filtersSlice";
 
 type Props = {
   min: number,
   max: number,
   value: number[],
-  setValue: number[]
+  setValue: React.Dispatch<React.SetStateAction<any>>
 }
 
 export default function PriceRangeSlider({ min, max, value, setValue }: Props) {
-
-  // const [value, setValue] = React.useState<number[]>([min, max]);
-
-  const dispatch = useDispatch()
-  const minPrice = useSelector(selectMinPrice)
-  const maxPrice = useSelector(selectMaxPrice)
-
-  // console.log(min, max)
-  // console.log(value)
-  // console.log(`min redux: ${minPrice} max redux: ${maxPrice}`)
 
   const Input = styled(MuiInput)`
     width: 46px;
@@ -34,11 +23,6 @@ export default function PriceRangeSlider({ min, max, value, setValue }: Props) {
   React.useEffect(() => {
     setValue([min, max])
   }, [min, max])
-
-  // React.useEffect(() => {
-  //   dispatch(updateMinPrice(value[0]))
-  //   dispatch(updateMaxPrice(value[1]))
-  // }, [value])
 
   const marks = [
     {
@@ -81,18 +65,9 @@ export default function PriceRangeSlider({ min, max, value, setValue }: Props) {
     setValue(newValue as number[]);
   };
 
-  const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 100) {
-      setValue(100);
-    }
-  };
-
-
   return (
     <>
-      <Box /*sx={{ width: 300, marginTop: 10 }}*/ className="mr-5 ml-1 mt-4">
+      <Box className="mr-5 ml-1 mt-4">
         <Slider
           getAriaLabel={() => "Temperature range"}
           value={value}
@@ -114,7 +89,6 @@ export default function PriceRangeSlider({ min, max, value, setValue }: Props) {
             value={value[0]}
             size="small"
             onChange={handleMinInputChange}
-            onBlur={handleBlur}
             inputProps={{
               style: { padding: 0, marginTop: '2px', fontSize: '12px', lineHeight: '20px' },
               step: 1,
@@ -134,7 +108,6 @@ export default function PriceRangeSlider({ min, max, value, setValue }: Props) {
             value={value[1]}
             size="small"
             onChange={handleMaxInputChange}
-            onBlur={handleBlur}
             inputProps={{
               style: { padding: 0, marginTop: '2px', fontSize: '12px', lineHeight: '20px' },
               step: 1,

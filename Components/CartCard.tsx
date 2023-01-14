@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { decreaseQuantity, addToCart, changeQuantity } from '../slices/cartSlice'
 import { useDispatch } from 'react-redux'
+import { CartItem } from '../typings';
 
 type Props = {
   id: number,
@@ -23,8 +24,8 @@ type Props = {
   title: string,
   description: string,
   quantity: number,
-  deletedItems: [],
-  setDeletedItems: React.Dispatch<React.SetStateAction<Object[]>>
+  deletedItems: CartItem[],
+  setDeletedItems: React.Dispatch<React.SetStateAction<CartItem[]>>
 }
 
 const CartCard = ({
@@ -43,8 +44,6 @@ const CartCard = ({
   setDeletedItems
 }: Props) => {
 
-  const router = useRouter()
-
   const dispatch = useDispatch()
 
   const product = {
@@ -56,6 +55,7 @@ const CartCard = ({
     rating,
     stock,
     brand,
+    quantity,
     category,
     thumbnail
   }

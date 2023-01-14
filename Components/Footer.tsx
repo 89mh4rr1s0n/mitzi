@@ -7,8 +7,8 @@ type Props = {}
 const Footer = (props: Props) => {
   return (
     <>
-      <footer className='bg-slate-300 m-auto flex justify-center'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 px-10 py-6  max-w-[1100px]'>
+      <footer className='bg-slate-300 m-auto flex justify-center min-w-full'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 px-10 py-6 max-w-[1100px]'>
 
           {/* first column */}
           <div className='mb-5 space-y-1'>

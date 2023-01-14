@@ -1,39 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Head from 'next/head'
 import Header from '../Components/Header'
-import Homefeed from '../Components/Homefeed'
 import Homefeed2 from '../Components/Homefeed2'
 import CategoryGrid from '../Components/CategoryGrid'
 import Banner from '../Components/Banner'
-import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchProducts,
-  selectProducts,
-  selectCategories,
-  selectMostDiscounted,
-  selectTopRated
-} from '../slices/productsSlice'
-import getStore, { store } from '../store'
-import { useEffect } from 'react'
-import Footer from '../Components/Footer'
+import { Product, ProductData } from '../typings'
 
-export default function Home(/*{ products }*/) {
 
-  const dispatch = useDispatch()
-  const products = useSelector(selectProducts)
-  const categories = useSelector(selectCategories)
-  const mostDiscounted = useSelector(selectMostDiscounted)
-  const topRated = useSelector(selectTopRated)
+export default function Home({ products }: any) {
 
-  useEffect(() => {
-    if (products.length === 0) {
-      dispatch(fetchProducts())
-    }
-  }, [])
-
-  console.log(products)
+  const mostDiscounted = products.products.slice().sort((a:Product, b:Product) => b.discountPercentage - a.discountPercentage).slice(0, 10)
+  const topRated = products.products.slice().sort((a:Product, b:Product) => b.rating - a.rating).slice(0, 10)
+  const categories = products.products.map((p:Product) => p.category).reduce(function (a:Product[], b:Product) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
 
   {
-    if (products.length === 0) {
+    if (products.limit === 0) {
       return <div>loading</div>
     }
   }
@@ -68,32 +49,19 @@ export default function Home(/*{ products }*/) {
 
       </main>
 
-      {/* <Footer/> */}
-
     </div>
   )
 }
 
-// export async function getServerSideProps() {
-//   // const products = await fetch("https://dummyjson.com/products?limit=100").
-//   //   then(
-//   //     (res) => res.json()
-//   //   )
+export async function getServerSideProps() {
+  const products = await fetch("https://dummyjson.com/products?limit=100").
+    then(
+      (res) => res.json()
+    )
 
-//   // return {
-//   //   props: {
-//   //     products,
-//   //   }
-//   // }
-
-//   // const store = getStore()
-//   const store = getStore()
-//   await store.dispatch(fetchProducts())
-//   return {
-//     props: {
-//       initialState: store.getState(),
-//     }
-//   }
-// }
-
-
+  return {
+    props: {
+      products,
+    }
+  }
+}

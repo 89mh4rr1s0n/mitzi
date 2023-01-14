@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
@@ -41,7 +42,7 @@ const Checkbox = ({ value, field }: Props) => {
       />
       <label
         className='ml-2'
-        for={value}>
+        >
         {value}
       </label>
     </div>

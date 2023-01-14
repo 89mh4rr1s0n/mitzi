@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import Header from '../Components/Header'
 import LargeProductCard from '../Components/LargeProductCard'
+import { Product, CartItem } from '../typings';
 
 import { useRouter } from 'next/router'
 
-export default function Home({ products, item }) {
+export default function Home({ products, item }:{products: Product[], item: Product}) {
 
   // const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
 
@@ -29,7 +30,7 @@ export default function Home({ products, item }) {
           brand={item.brand}
           category={item.category}
           thumbnail={item.thumbnail}
-          images={item.images}
+          images={item.images!}
        />
 
       </main>
@@ -42,7 +43,7 @@ export default function Home({ products, item }) {
 export async function getServerSideProps(context: any) {
   const products = await fetch("https://dummyjson.com/products?limit=100")
   const productsJson = await products.json()
-  const item = await productsJson.products.filter(p => context.query.productNumber == p.id)[0]
+  const item = await productsJson.products.filter((p:Product) => context.query.productNumber == p.id)[0]
 
   return {
     props: {

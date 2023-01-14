@@ -11,7 +11,8 @@ import filtersReducer from './slices/filtersSlice'
 import cartReducer from './slices/cartSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
-import thunk from 'redux-thunk';
+import thunkMiddleware from 'redux-thunk';
+import { useDispatch } from 'react-redux';
 
 const persistConfig = {
   key: 'root',
@@ -42,7 +43,7 @@ export let store = configureStore({
     filters: persistedFilterReducer,
     cart: persistedCartReducer
   },
-  middleware: [thunk]
+  middleware: [thunkMiddleware]
 })
 
 export const persistor = persistStore(store)
@@ -51,3 +52,5 @@ export const persistor = persistStore(store)
 export type RootState = ReturnType<typeof store.getState>
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch
+
+export const useAppDispatch = () => useDispatch<AppDispatch>()

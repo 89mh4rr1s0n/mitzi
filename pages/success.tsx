@@ -5,10 +5,9 @@ import { CheckCircleIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
 import { clearCart, selectItems } from '../slices/cartSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { Product, CartItem } from '../typings';
 
-type Props = {}
-
-const Success = ({ products }) => {
+const Success = ({ products }: { products: Product[] }) => {
 
   const router = useRouter()
   const dispatch = useDispatch()

@@ -3,9 +3,9 @@ import useCollapse from 'react-collapsed'
 import { ChevronDownIcon } from "@heroicons/react/outline";
 
 type Props = {
-  values: [],
+  values: string[],
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => any;
-  checkerArr: []
+  checkerArr: string[]
 }
 
 const CheckboxFilterColumn = ({ values, onChange, checkerArr }: Props) => {
@@ -38,7 +38,7 @@ const CheckboxFilterColumn = ({ values, onChange, checkerArr }: Props) => {
       </section>
 
       <button className='text-center w-full hover:underline text-sm rounded-md border-zinc-300
-      flex items-end justify-center border mt-1'
+      flex items-end justify-center border mt-1 hover:bg-slate-100 transition-all duration-200'
         {...getToggleProps({
           onClick: () => setExpanded((prevExpanded) => !prevExpanded),
         })}

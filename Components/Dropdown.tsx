@@ -3,22 +3,25 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Button from '@mui/material/Button';
+import { Sortings } from '../typings';
 
 type Props = {
-  sort,
-  setSort,
-  title,
-  values
+  sort: Sortings,
+  setSort: React.Dispatch<React.SetStateAction<Sortings>>,
+  title: string,
+  values: { val: string, label: string }[]
 }
 
 const Dropdown = ({ sort, setSort, title, values }: Props) => {
 
-  // const [age, setAge] = useState<string | number>('')
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(false)
 
-  const handleChange = (event: SelectChangeEvent<typeof sort>) => {
-    setSort(event.target.value);
+  const handleChange = (event: SelectChangeEvent<Sortings>) => {
+    if (event.target.value === 'priceLoToHi' ||
+      event.target.value === 'priceHiToLo' ||
+      event.target.value === 'rating') {
+      setSort(event.target.value);
+    }
   };
 
   const handleClose = () => {
@@ -31,7 +34,7 @@ const Dropdown = ({ sort, setSort, title, values }: Props) => {
 
   return (
     <div>
-      <FormControl sx={{ minWidth: 140 }}  size="small">
+      <FormControl sx={{ minWidth: 140 }} size="small">
         <InputLabel id="sort-by-dropdown">{title}</InputLabel>
         <Select
           labelId="sort-by-dropdown"
@@ -43,10 +46,7 @@ const Dropdown = ({ sort, setSort, title, values }: Props) => {
           label="Sort"
           onChange={handleChange}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {values.map((value , i) => (
+          {values.map((value, i) => (
             <MenuItem key={i} value={value.val}>{value.label}</MenuItem>
           ))}
         </Select>

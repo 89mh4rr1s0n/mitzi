@@ -1,42 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Header from '../Components/Header';
 import Head from 'next/head';
 import CartCard from '../Components/CartCard';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectItems, selectTotal, addToCart } from '../slices/cartSlice';
-import { selectProducts, fetchProducts } from '../slices/productsSlice';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSession } from 'next-auth/react';
 import Currency from 'react-currency-formatter';
 import { loadStripe } from '@stripe/stripe-js';
-import { useRouter } from 'next/router'
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { Product, CartItem } from '../typings';
+import { useAppDispatch } from '../hooks';
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
+const stripeKey: any = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+const stripePromise = loadStripe(stripeKey)
 
+export default function Cart({ products }: { products: Product[] }) {
 
-export default function Cart(/*{ products }*/) {
-
-  const dispatch = useDispatch()
-
-  const products = useSelector(selectProducts);
+  const dispatch = useAppDispatch()
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
   const { data: session, status } = useSession()
-
-  const [deletedItems, setDeletedItems] = useState([])
-
-  console.log(deletedItems)
+  const [deletedItems, setDeletedItems] = useState<CartItem[]>([])
 
   const createCheckoutSession = async () => {
     const stripe = await stripePromise;
     const checkoutSession = await axios.post('/api/checkout_session',
       {
         items,
-        email: session.user.email
+        email: session?.user?.email
       })
 
     // redirect user to stripe checkout
@@ -49,25 +43,10 @@ export default function Cart(/*{ products }*/) {
     }
   }
 
-  const restoreItem = (product) => {
+  const restoreItem = (product: CartItem) => {
     dispatch(addToCart(product))
-    setDeletedItems(deletedItems.filter((items) => product.id !== items.id))
+    setDeletedItems(deletedItems.filter((items: CartItem) => product.id !== items.id))
   }
-
-  useEffect(() => {
-    if (products.length === 0) {
-      dispatch(fetchProducts())
-    }
-  }, [])
-
-
-  {
-    if (products.length === 0) {
-      return <div>loading</div>
-    }
-  }
-
-
 
   return (
     <div>
@@ -79,16 +58,15 @@ export default function Cart(/*{ products }*/) {
 
       <main className='  lg:flex max-w-screen-xl m-auto'>
 
-
         {/* left side/ */}
         <div className=' bg-white rounded-lg m-5'>
           <div className='text-2xl font-semibold m-5'>Shopping Basket</div>
 
-          {items.length === 0 && 
-          <p className='ml-5'>Your Shopping Basket is empty</p>
+          {items.length === 0 &&
+            <p className='ml-5'>Your Shopping Basket is empty</p>
           }
 
-          {deletedItems.map((item, i) => (
+          {deletedItems.map((item: CartItem, i) => (
             <div
               key={i}
               className='ml-5 bg-slate-200 px-2 py-1 my-1 rounded-[4px] flex justify-between text-sm'>
@@ -101,7 +79,7 @@ export default function Cart(/*{ products }*/) {
             </div>
           ))}
 
-          {items.map((item, i) => (
+          {items.map((item: CartItem, i: number) => (
             <CartCard
               key={i}
               id={item.id}
@@ -125,7 +103,7 @@ export default function Cart(/*{ products }*/) {
         <div className='flex flex-col m-5 lg:ml-0 py-6 bg-white shadow-lg rounded-lg'>
           {items.length > 0 && (
             <>
-              <h2 className='ml-5 whitespace-nowrap p-4'>Subtotal ({items.reduce((a, b) => a + b.quantity, 0)} items):{" "}
+              <h2 className='ml-5 whitespace-nowrap p-4'>Subtotal ({items.reduce((a, b: CartItem) => a + b.quantity, 0)} items):{" "}
                 <span className='font-bold'>
                   <Currency
                     quantity={total}
@@ -148,7 +126,6 @@ export default function Cart(/*{ products }*/) {
           )}
         </div>
 
-
       </main>
 
     </div>
@@ -156,14 +133,15 @@ export default function Cart(/*{ products }*/) {
 }
 
 
-// export async function getServerSideProps() {
-//   // const products = await fetch("https://dummyjson.com/products?limit=100").
-//   //   then(
-//   //     (res) => res.json()
-//   //   )
+export async function getServerSideProps() {
+  const products = await fetch("https://dummyjson.com/products?limit=100").
+    then(
+      (res) => res.json()
+    )
 
-//   // return {
-//   //   props: {
-//   //     products,
-//   //   }
-//   // }
+  return {
+    props: {
+      products,
+    }
+  }
+}

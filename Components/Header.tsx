@@ -1,46 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image';
-import {
-    MenuIcon,
-    SearchIcon,
-    ShoppingCartIcon,
-    ChevronDownIcon
-} from "@heroicons/react/outline";
+import { MenuIcon, SearchIcon, ShoppingCartIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/dist/client/router';
 import { selectItems } from '../slices/cartSlice';
-import { updateCategories } from '../slices/filtersSlice'
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import useCollapse from 'react-collapsed'
+import { ProductData, Product } from '../typings';
+import BottomNav from '../Components/BottomNav'
 
 type Props = {
-    products
+    products: any
 }
 
 const Header = ({ products }: Props) => {
 
     const { data: session, status } = useSession();
     const router = useRouter();
-    const dispatch = useDispatch();
     const items = useSelector(selectItems);
-    const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort();
-    const [isExpanded, setExpanded] = useState(false)
+    const categories = products.products.map((p: Product) => p.category).reduce(function (a: Product[], b: Product) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort();
+    const [isExpanded, setExpanded] = useState<boolean>(false)
     const { getCollapseProps, getToggleProps } = useCollapse({ isExpanded })
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [searchWord, setSearchWord] = useState('');
-
-    const searchCategory = (categoryName: string) => {
-        dispatch(updateCategories([categoryName]))
-        router.push({
-            pathname: "/products",
-            query: {
-                category: [categoryName]
-            }
-        })
-    }
+    const [searchWord, setSearchWord] = useState<string>('');
 
     const searchItem = (item: number) => {
         setSearchWord('')
@@ -52,7 +37,7 @@ const Header = ({ products }: Props) => {
         })
     }
 
-    const searchQuery = (event) => {
+    const searchQuery = (event: any) => {
         setSearchWord('')
         event.preventDefault()
         console.log(event.target[0].value)
@@ -64,7 +49,7 @@ const Header = ({ products }: Props) => {
         })
     }
 
-    const handleFilter = (e) => {
+    const handleFilter = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearchWord(e.target.value)
     }
 
@@ -73,7 +58,7 @@ const Header = ({ products }: Props) => {
         if (searchWord === '') {
             setFilteredProducts([])
         } else if (searchWord.length > 0) {
-            setFilteredProducts(products.products.filter(product =>
+            setFilteredProducts(products.products.filter((product: Product) =>
                 product.title.toLowerCase().includes(searchWord.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchWord.toLowerCase()) ||
                 product.brand.toLowerCase().includes(searchWord.toLowerCase())
@@ -118,7 +103,7 @@ const Header = ({ products }: Props) => {
                         {searchWord.length > 0 &&
                             <div className='absolute block right-[32px] top-[31px] bg-slate-100 border left-0 z-50 rounded-b-lg pb-1'>
                                 <div className='flex flex-col'>
-                                    {filteredProducts.length > 0 ? filteredProducts.slice(0, 12).map((item, i) => (
+                                    {filteredProducts.length > 0 ? filteredProducts.slice(0, 12).map((item: Product, i) => (
                                         <div
                                             key={i}
                                             onClick={() => searchItem(item.id)}
@@ -144,10 +129,9 @@ const Header = ({ products }: Props) => {
                                 onMouseEnter: () => setExpanded((prevExpanded) => !prevExpanded),
                                 onMouseLeave: () => setExpanded((prevExpanded) => !prevExpanded),
                             })} >
-                            {/* <FontAwesomeIcon icon={faUser} className='mx-2 h-4' /> */}
-                            <div className={`link ${session && 'cursor-default'}`} /*onClick={handleSignIn}*/ onClick={!session ? signIn : console.log('')}>
+                            <div className={`link ${session && 'cursor-default'}`} onClick={!session ? () => signIn() : () => console.log('')}>
                                 <p>
-                                    {session ? `${session.user.name}` : `Sign In`}
+                                    {session ? `${session.user?.name}` : `Sign In`}
                                 </p>
                                 <p className='font-bold md:text-sm flex justify-between'>{`Account`}{session && <ChevronDownIcon className='h-3 self-end mb-[2px]' />}</p>
 
@@ -155,7 +139,7 @@ const Header = ({ products }: Props) => {
                                     <div className='absolute z-50 top-12 right-0 left-0 bg-slate-200 px-2 mx-[-1px] 
                                     border-b border-x border-slate-400 rounded-b-[4px] cursor-default'
                                         {...getCollapseProps()}>
-                                        <button onClick={session && signOut}
+                                        <button onClick={session && (() => signOut())}
                                             className='bg-theme-red hover:bg-red-700 transition-all duration-300 text-white 
                                             my-3 py-1 w-full rounded-[4px] text-[14px] font-semibold h-7'>
                                             <FontAwesomeIcon icon={faArrowRightToBracket} className='mr-2 h-[14px]' />
@@ -186,17 +170,8 @@ const Header = ({ products }: Props) => {
                 </div>
 
                 {/* bottom nav */}
-                <div
-                    className='flex items-center bg-amazon_blue-light text-sm text-white bg-slate-300
-                    space-x-3 px-2 py-1 pt-2 sm:overflow-x-scroll scrollbar-thin scrollbar-thumb-theme-red'>
-                    <MenuIcon className='inline sm:hidden h-6 mr-2' />
-                    {categories.map((cat: string, i: number) => (
-                        <button key={i} onClick={() => searchCategory(cat)} className="min-w-min sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
-                            <span className="min-w-min w-52 h-52 rounded rotate-[-40deg] bg-theme-red absolute bottom-0 left-0 -translate-x-full ease-out duration-450 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-                            <span className=" whitespace-nowrap relative w-full text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">{cat}</span>
-                        </button>
-                    ))}
-                </div>
+                <BottomNav values={categories} />
+
             </header>
         </>)
 };

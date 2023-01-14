@@ -64,11 +64,11 @@ const MediumProductCard = ({
   }
 
   return (
-    <div className='flex my-5 py-2 shadow-lg rounded-lg'>
+    <div className='flex my-5 py-2 shadow-lg rounded-lg flex-grow h-[220px]'>
 
 
       {/* left side with image */}
-      <div className='relative hover:bg-black/5 z-10 flex items-center content-center rounded-lg hover:brightness-95'
+      <div className='relative hover:bg-black/5 z-10 flex items-center content-center rounded-lg hover:brightness-95 ml-2'
         onMouseEnter={() => setImageHover(true)}
         onMouseLeave={() => setImageHover(false)}>
         <Image
@@ -93,7 +93,7 @@ const MediumProductCard = ({
 
       {/* right side */}
       <div className=' flex flex-col justify-between 
-      ml-2 mt-1'>
+      ml-2 mt-1 w-full'>
         <div className='pr-3'>
           <div className=' font-bold text-lg hover:text-theme-red hover:cursor-pointer line-clamp-1'>{`${brand} ${title}`}</div>
           <Rating
@@ -105,7 +105,7 @@ const MediumProductCard = ({
             className='mt-1 w-fit z-20 relative'
           />
           <div className='text-xs p-1 px-2 bg-theme-red text-white w-fit'>{`${discount}% off`}</div>
-          <div className=' line-clamp-2 py-1'>{description}</div>
+          <div className=' line-clamp-2 py-1 flex-grow'>{description}</div>
           <div className=' font-bold'>{`£${price}.00`}</div>
           {/* <div>{ category }</div> */}
         </div>
