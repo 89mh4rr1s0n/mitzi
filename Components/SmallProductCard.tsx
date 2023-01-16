@@ -28,7 +28,7 @@ const SmallProductCard = ({ description, thumbnail, discount, rating, itemNo }: 
     }
 
     return (
-        <div className='py-4 px-3 relative hover:bg-black/10 rounded-lg transition-all duration-400 z-40 snap-start'
+        <div className=' py-2 mb:py-4 mb:px-3 relative hover:bg-black/10 rounded-lg transition-all duration-400 z-40 snap-start'
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
             {hover &&

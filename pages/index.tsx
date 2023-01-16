@@ -29,7 +29,7 @@ export default function Home({ products }: any) {
 
       <Banner />
 
-      <main className='-mt-44 z-50'>
+      <main className=' -mt-11 sm:-mt-20 md:-mt-44 z-50'>
 
         <Homefeed2
           title='Shop our biggest discounted items'

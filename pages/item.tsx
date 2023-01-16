@@ -1,13 +1,9 @@
 import Head from 'next/head'
 import Header from '../Components/Header'
 import LargeProductCard from '../Components/LargeProductCard'
-import { Product, CartItem } from '../typings';
-
-import { useRouter } from 'next/router'
+import { Product } from '../typings';
 
 export default function Home({ products, item }:{products: Product[], item: Product}) {
-
-  // const categories = products.products.map(p => p.category).reduce(function (a, b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort()
 
   return (
     <div>

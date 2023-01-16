@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import SmallProductCard from './SmallProductCard'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { Product } from "../typings";
+import { useWindowSize } from '../utils/utils';
 
 type Props = {
   title: string,
@@ -14,6 +15,7 @@ const Homefeed2 = ({ products, title }: Props) => {
   const [scrollX, setscrollX] = useState<number>(0);
   const [scrolEnd, setscrolEnd] = useState<boolean>(false);
   const [arrowsVisible, setArrowsVisible] = useState<boolean>(false)
+  const [width, height] = useWindowSize()
 
   const easeInOutQuad = (t: number, b: number, c: number, d: number):number => {
     t /= d / 2;
@@ -64,12 +66,12 @@ const Homefeed2 = ({ products, title }: Props) => {
   }, [scrl?.current?.scrollWidth, scrl?.current?.offsetWidth]);
 
   return (
-    <div className="mx-10">
-      <div className="bg-slate-300 m-auto z-20 max-w-[1800px] rounded-lg mt-10"
+    <div className="mb:mx-10">
+      <div className="bg-slate-300 m-auto z-20 max-w-[1800px] mb:rounded-lg pt-4 mb:pt-0 mb:mt-10"
         onMouseEnter={() => setArrowsVisible(true)}
         onMouseLeave={() => setArrowsVisible(false)}>
 
-        <div className='mx-3 my-1 translate-y-2 z-20 text-white relative bg-theme-red rounded-md w-fit px-4'>{title}</div>
+        <div className='mx-3 mb:my-1 translate-y-2 z-20 text-white relative bg-theme-red rounded-md w-fit px-4'>{title}</div>
 
         <div className="relative pt-3 flex">
 
@@ -79,7 +81,7 @@ const Homefeed2 = ({ products, title }: Props) => {
             <button
               className="absolute top-1/3 h-24 w-10 rounded-r-md z-50 text-white
               bg-theme-blue shadow-lg border border-white"
-              onClick={() => scrollLeft(scrl.current, -400, 200)}
+              onClick={() => scrollLeft(scrl.current, -width * 0.65, 200)}
             >
               <ChevronLeftIcon className='h-8 w-8 bg-theme-blue' />
             </button>
@@ -107,7 +109,7 @@ const Homefeed2 = ({ products, title }: Props) => {
             <button
               className="absolute right-0 top-1/3 h-24 w-10 text-white z-50
               bg-theme-blue shadow-lg border border-white rounded-l-md"
-              onClick={() => scrollLeft(scrl.current, 400, 200)}
+              onClick={() => scrollLeft(scrl.current, width * 0.65, 200)}
             >
               <ChevronRightIcon className='h-8 w-8 bg-theme-blue' />
             </button>

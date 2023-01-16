@@ -18,6 +18,12 @@ module.exports = {
         'dark-black': 'rgba(24,29,31,255)'
       }
     },
+    screens: {
+      'mb': '480px',
+      'sm': '650px',
+      'md': '960px',
+      'lg': '1440px',
+    }
   },
   plugins: [
     require('tailwind-scrollbar'),

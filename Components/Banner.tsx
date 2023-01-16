@@ -7,11 +7,11 @@ type Props = {}
 
 const Banner = (props: Props) => {
   return (
-    <div className='mx-10'>
+    <div className='mb:mx-10'>
       <div className='relative max-w-[1800px] m-auto'>
         <div
           className='absolute w-full h-32 
-            bg-gradient-to-t from-slate-300 via-slate-400 to-transparent bottom-0 z-20' />
+            bg-gradient-to-t from-slate-300 sm:via-slate-300 to-transparent bottom-0 z-20' />
         <Carousel
           autoPlay
           infiniteLoop

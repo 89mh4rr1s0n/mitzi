@@ -116,7 +116,7 @@ export default function Cart({ products }: { products: Product[] }) {
                 role="link"
                 onClick={createCheckoutSession}
                 className={`bg-theme-blue font-medium rounded-md hover:bg-theme-red text-white py-2 mx-4  
-                ${!session && 'bg-gray-300 text-black hover:bg-gray-400 cursor-not-allowed'}`}>
+                ${!session && 'bg-gray-300 text-black hover:bg-gray-400 cursor-not-allowed'} transition-colors duration-300`}>
 
                 {!session ? "Sign in to Proceed" : "Proceed to Checkout"}
 

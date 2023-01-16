@@ -65,15 +65,14 @@ const LargeProductCard = ({
       images
     }
     dispatch(addToCart(product))
-    // toast('Item added to cart')
   }
 
   return (
     <div className='m-auto max-w-[850px] sm:flex my-6'>
+
       <ToastContainer
         autoClose={1400}
       />
-
 
       <div className='flex items-center'>
         <div className='flex flex-col'>
@@ -86,7 +85,7 @@ const LargeProductCard = ({
                 height={50}
                 width={50}
                 alt=''
-                className={`shadow-md rounded-md my-2 max-h-[56px] ${image === activeImage && ' border-theme-red border-2'}`}
+                className={`shadow-md rounded-md my-2 max-h-[56px] object-contain ${image === activeImage && ' border-theme-red border-2'}`}
               />
             </div>
           ))}

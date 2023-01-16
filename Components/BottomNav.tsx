@@ -3,6 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useDispatch } from 'react-redux';
 import { updateCategories } from '../slices/filtersSlice'
 import { useRouter } from "next/router";
+import { useWindowSize } from '../utils/utils';
 
 type Props = {
   values: []
@@ -16,6 +17,7 @@ const BottomNav = ({ values }: Props) => {
   const [scrollX, setscrollX] = useState<number>(0);
   const [scrolEnd, setscrolEnd] = useState<boolean>(false);
   const [arrowsVisible, setArrowsVisible] = useState<boolean>(false)
+  const [width, height] = useWindowSize()
 
   const easeInOutQuad = (t: number, b: number, c: number, d: number): number => {
     t /= d / 2;
@@ -89,7 +91,7 @@ const BottomNav = ({ values }: Props) => {
           {scrollX !== 0 && arrowsVisible && (
             <button
               className="absolute top-0 bottom-2 w-6 z-50 bg-slate-300"
-              onClick={() => scrollLeft(scrl.current, -400, 200)}
+              onClick={() => scrollLeft(scrl.current, -width * 0.65, 200)}
             >
               <ChevronLeftIcon className='h-6 w-6 bg-slate-300 text-black mt-1' />
             </button>
@@ -100,7 +102,7 @@ const BottomNav = ({ values }: Props) => {
           <div className="flex overflow-x-scroll scrollbar-thin pt-2 pb-3 px-5
           scrollbar-thumb-theme-red space-x-2" ref={scrl} onScroll={scrollCheck}>
             {values.map((value: string, i: number) => (
-              <button key={i} onClick={() => searchCategory(value)} className="min-w-min sm:relative hidden sm:inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
+              <button key={i} onClick={() => searchCategory(value)} className="min-w-min relative inline-flex items-center justify-start px-3 py-1 bg-theme-blue overflow-hidden font-medium transition-all  rounded hover:bg-white group">
                 <span className="min-w-min w-52 h-52 rounded rotate-[-40deg] bg-theme-red absolute bottom-0 left-0 -translate-x-full ease-out duration-450 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
                 <span className=" whitespace-nowrap relative w-full text-left min-w-min text-white transition-colors duration-300 ease-in-out group-hover:text-white">{value}</span>
               </button>
@@ -113,7 +115,7 @@ const BottomNav = ({ values }: Props) => {
             <button
               className="absolute right-0 top-0 bottom-2 w-6 z-50
               bg-slate-300 "
-              onClick={() => scrollLeft(scrl.current, 400, 200)}
+              onClick={() => scrollLeft(scrl.current, width * 0.65, 200)}
             >
               <ChevronRightIcon className='h-6 w-6 bg-slate-300 text-black mt-1' />
             </button>

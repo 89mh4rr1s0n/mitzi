@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image';
 import Rating from '@mui/material/Rating';
-import { useRouter } from 'next/router'
-import {
-  PlusIcon,
-  MinusIcon,
-} from "@heroicons/react/outline";
+import { PlusIcon, MinusIcon } from "@heroicons/react/outline";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { decreaseQuantity, addToCart, changeQuantity } from '../slices/cartSlice'
@@ -62,7 +58,6 @@ const CartCard = ({
 
   const addItemToCart = () => {
     dispatch(addToCart(product))
-    // toast('Item added to cart')
   }
 
   const removeItem = () => {
@@ -73,7 +68,7 @@ const CartCard = ({
   }
 
   return (
-    <div className={`flex p-5 py-2 my-3 rounded-lg shadow-md`}>
+    <div className={`mb:flex p-5 py-2 my-3 rounded-lg shadow-md`}>
 
       <style jsx>{`
             input::-webkit-outer-spin-button,
@@ -89,20 +84,20 @@ const CartCard = ({
 
 
       {/* left side with image */}
-      <div className='relative hover:bg-black/5 z-10 flex items-center content-center rounded-lg hover:brightness-95'>
+      <div className='relative z-10 flex items-center justify-center content-center rounded-lg'>
         <Image
           src={thumbnail}
           height={200}
           width={200}
           objectFit='contain'
           alt=''
-          className=' object-contain rounded-md min-w-[200px] max-h-[200px]'
+          className=' object-contain rounded-md min-w-[150px] max-h-[150px] sm:min-w-[200px] sm:max-h-[200px]'
         />
       </div>
 
 
       {/* right side */}
-      <div className=' flex flex-col justify-between 
+      <div className=' flex flex-col justify-between text-sm sm:text-base
       ml-2 mt-1'>
         <div className='pr-3'>
           <div className=' font-bold text-lg hover:text-theme-red hover:cursor-pointer line-clamp-1'>{`${brand} ${title}`}</div>
@@ -127,7 +122,7 @@ const CartCard = ({
             <div className=' text-white rounded-l-md p-1 cursor-pointer hover:bg-theme-red 
             bg-theme-blue border border-theme-blue hover:border-theme-red' onClick={removeItem}>
               {quantity === 1 ?
-                <FontAwesomeIcon icon={faTrash} className='h-4 flex-grow w-[24px]' /> :
+                <FontAwesomeIcon icon={faTrash} className='h-4 flex-grow w-[24px] align-middle sm:align-baseline sm:mt-1' /> :
                 <MinusIcon className='h-6  flex-grow p-1' />
               }
             </div>
