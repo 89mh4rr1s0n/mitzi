@@ -10,10 +10,7 @@ type Props = {
 const Checkbox = ({ value, field }: Props) => {
 
   const router = useRouter()
-
   const [isChecked, setIsChecked] = useState(false)
-
-  // console.log(router.query)
 
   useEffect(() => {
     if (!isChecked) {

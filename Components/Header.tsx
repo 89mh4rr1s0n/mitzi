@@ -5,7 +5,7 @@ import { SearchIcon, ShoppingCartIcon, ChevronDownIcon } from "@heroicons/react/
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/dist/client/router';
 import { selectItems } from '../slices/cartSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import useCollapse from 'react-collapsed'
@@ -40,7 +40,6 @@ const Header = ({ products }: Props) => {
     const searchQuery = (event: any) => {
         setSearchWord('')
         event.preventDefault()
-        console.log(event.target[0].value)
         router.push({
             pathname: '/products',
             query: {
