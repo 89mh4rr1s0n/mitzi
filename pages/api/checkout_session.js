@@ -3,14 +3,10 @@ const stripe = require('stripe')(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   const { items, email } = req.body
 
-  // console.log(items)
-  // console.log(email)
-
   const transformedItems = items.map(item => ({
-    // title: item.title,
     price_data: {
       currency: 'gbp',
-      unit_amount: (item.price * 100) /* * item.quantity*/,
+      unit_amount: (item.price * 100),
       product_data: {
         description: item.description,
         name: item.title,
@@ -22,7 +18,6 @@ export default async function handler(req, res) {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    // shipping_rates: ['shr_1MHAUcD0KoL8F0sKoHvt6o7D'],
     shipping_options: [
       {
         shipping_rate_data: {
@@ -45,7 +40,7 @@ export default async function handler(req, res) {
     cancel_url: `${process.env.HOST}/cart`,
     metadata: {
       email,
-      images: JSON.stringify(items.map((item) => item.thumbnail)) // error is here
+      images: JSON.stringify(items.map((item) => item.thumbnail))
     }
   })
 

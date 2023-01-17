@@ -56,7 +56,7 @@ export default function Cart({ products }: { products: Product[] }) {
 
       <Header products={products} />
 
-      <main className='  lg:flex max-w-screen-xl m-auto'>
+      <main className='  md:flex max-w-screen-xl m-auto'>
 
         {/* left side/ */}
         <div className=' bg-white rounded-lg m-5'>
