@@ -56,7 +56,7 @@ export default function Cart({ products }: { products: Product[] }) {
 
       <Header products={products} />
 
-      <main className='  md:flex max-w-screen-xl m-auto'>
+      <main className='  md:flex justify-center max-w-screen-xl mx-auto'>
 
         {/* left side/ */}
         <div className=' bg-white rounded-lg m-5'>
@@ -100,7 +100,7 @@ export default function Cart({ products }: { products: Product[] }) {
         </div>
 
         {/* right */}
-        <div className='flex flex-col m-5 lg:ml-0 py-6 bg-white shadow-lg rounded-lg'>
+        <div className='flex flex-col m-5 lg:ml-0 py-6 bg-white shadow-lg rounded-lg mb-8'>
           {items.length > 0 && (
             <>
               <h2 className='ml-5 whitespace-nowrap p-4'>Subtotal ({items.reduce((a, b: CartItem) => a + b.quantity, 0)} items):{" "}
