@@ -136,7 +136,7 @@ const Header = ({ products }: Props) => {
                         <div className='flex'>
                             <div
                                 className={`flex flex-col justify-between h-full link relative hover:bg-slate-200 p-2 
-                            ${session ? 'rounded-t-[4px] border-t border-x cursor-default' : 'rounded-[4px] border'} border-slate-100 hover:border-slate-400`}
+                            ${session ? 'min-w-[100px] rounded-t-[4px] border-t border-x cursor-default' : 'rounded-[4px] border'} border-slate-100 hover:border-slate-400`}
                                 {...getToggleProps({
                                     onMouseEnter: () => setExpanded((prevExpanded) => !prevExpanded),
                                     onMouseLeave: () => setExpanded((prevExpanded) => !prevExpanded),

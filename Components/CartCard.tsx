@@ -111,7 +111,7 @@ const CartCard = ({
           />
           <div className='text-xs p-1 px-2 bg-theme-red text-white w-fit'>{`${discountPercentage}% off`}</div>
           <div className=' line-clamp-2 py-1'>{description}</div>
-          <div className=' font-bold'>{`£${price}.00`}</div>
+          <div className=' font-bold'>{`£${price * quantity}.00`}<span className=' font-normal text-sm'>{`${quantity > 1 ? ` (£${price}.00 per unit)`: ''}`}</span></div>
           <div>{`${stock} left in stock`}</div>
         </div>
 
