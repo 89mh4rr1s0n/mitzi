@@ -7,7 +7,7 @@ import Rating from '@mui/material/Rating';
 import Pagination from './Pagination'
 import {
   addCategory, removeCategory, selectCategories, clearCategories, selectAllFilters,
-  updateCategories, selectBrands, addBrand, removeBrand,
+  updateCategories, selectBrands, addBrand, removeBrand, clearBrands
 } from '../slices/filtersSlice'
 import { useSelector, useDispatch } from "react-redux";
 import useCollapse from 'react-collapsed'
@@ -107,10 +107,6 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
   }
 
   useEffect(() => {
-    setCurrentPage(1)
-  }, [router.query])
-
-  useEffect(() => {
     let categoryFilteredProducts: Product[] = handleCheckboxFilter(products, cats, 'category') // invokes category filter
     let brandAndCategoryFilteredProducts: any = handleCheckboxFilter(categoryFilteredProducts, brandsArr, 'brand') // invokes brand fillter
     let brandCategoryAndRatingFilteredProducts = brandAndCategoryFilteredProducts.filter((item: Product) => item.rating > rating) // invokes rating filter
@@ -129,38 +125,69 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
     // router.push(newQuery)
   }, [cats, brandsArr, sort, value, rating, router.query])
 
+  const catsSorter = (a: string, b: string) => {
+    if (cats.includes(a) && cats.includes(b)) {
+      if (a < b) { return -1 }
+      if (a > b) { return 1 }
+    }
+    if (cats.includes(a)) { return -1; };
+    if (cats.includes(b)) { return 1; };
+    if (a < b) { return -1 }
+    if (a > b) { return 1 }
+    return 0;
+  };
+
+  const brandSorter = (a: string, b: string) => {
+    if (brandsArr.includes(a) && brandsArr.includes(b)) {
+      if (a < b) { return -1 }
+      if (a > b) { return 1 }
+    }
+    if (brandsArr.includes(a)) { return -1; };
+    if (brandsArr.includes(b)) { return 1; };
+    if (a < b) { return -1 }
+    if (a > b) { return 1 }
+    return 0;
+  };
 
   useEffect(() => {
     if (cats.length === 0) {
-      setBrands(products.map(p => p.brand).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+      setBrands(products.map(p => p.brand).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort((brandSorter)))
     } else {
-      setBrands(products.filter(product => cats.includes(product.category)).map(p => p.brand).sort())
+      setBrands(products
+        .filter(product => cats.includes(product.category))
+        .map(p => p.brand)
+        .reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, [])
+        .sort((brandSorter)))
     }
-  }, [cats, router.query])
+  }, [cats, brandsArr, router.query])
 
   useEffect(() => {
     if (brandsArr.length === 0) {
-      setCategories(products.map(p => p.category).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort())
+      setCategories(products.map(p => p.category).reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, []).sort((catsSorter)))
     } else {
-      setCategories(products.filter(product => brandsArr.includes(product.brand)).map(p => p.category).sort())
+      setCategories(products
+        .filter(product => brandsArr.includes(product.brand) || cats.includes(product.category))
+        .map(p => p.category)
+        .reduce(function (a: string[], b: string) { if (a.indexOf(b) < 0) a.push(b); return a; }, [])
+        .sort((catsSorter)))
     }
-  }, [brandsArr, router.query])
+  }, [cats, brandsArr, router.query])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage])
 
   useEffect(() => {
-    if(width <= 650){
+    if (width <= 650) {
       setDisplay('grid')
     }
 
-    if(width > 480){
+    if (width > 480) {
       setShowSidebar(true)
     } else {
       setShowSidebar(false)
     }
-  },[width])
+  }, [width])
 
   return (
     <div className='relative'>
@@ -199,12 +226,19 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
         <div className=' absolute px-2 left-0 mb:hidden bg-slate-200 rounded-r-md cursor-pointer' onClick={() => setShowSidebar(!showSidebar)}>Show Filters</div>
 
         {/* filter panel column */}
-        <div className={` min-w-[200px] px-3 mb:px-1 mb:mx-1 pb-10 absolute  mb:static bg-white border mb:border-y-0 mb:border-l-0 shadow-lg mb:shadow-none z-40 left-0
+        <div className={` min-w-[200px] max-w-[200px] px-3 mb:px-1 mb:mx-1 pb-10 absolute  mb:static bg-white border mb:border-y-0 mb:border-l-0 shadow-lg mb:shadow-none z-40 left-0
         ${!showSidebar ? "translate-x-[-220px]" : "translate-x-0"} ease-in-out duration-300`}>
 
           <div className='text-right mb:hidden text-2xl cursor-pointer' onClick={() => setShowSidebar(!showSidebar)}>&times;</div>
           {/* categories filter checkboxes */}
-          <div className=' font-semibold mb-1 mb:pt-4 '>Category</div>
+          <div className='flex mb-1 mb:pt-4 items-center'>
+            <div className=' font-semibold  '>Category</div>
+            {
+              cats.length > 0 && <>
+                <div className='text-sm ml-1'>{`(${cats.length})`}</div>
+                <button onClick={() => dispatch(clearCategories())} className='ml-2 px-2 hover:bg-slate-100 transition-colors duration-200 rounded-[4px]'>clear</button>
+              </>}
+          </div>
           <div>
             <CheckboxFilterColumn
               values={categories}
@@ -215,7 +249,14 @@ const ProductFeed = ({ products, searchedProducts }: Props) => {
 
 
           {/* brand filter checkboxes */}
-          <div className=' font-semibold my-2 pt-4'>Brand</div>
+          <div className='flex mb-1 mb:pt-4 items-center'>
+            <div className=' font-semibold  '>Brand</div>
+            {
+              brandsArr.length > 0 && <>
+                <div className='text-sm ml-1'>{`(${brandsArr.length})`}</div>
+                <button onClick={() => dispatch(clearBrands())} className='ml-2 px-2 hover:bg-slate-100 transition-colors duration-200 rounded-[4px]'>clear</button>
+              </>}
+          </div>
           <div>
             <CheckboxFilterColumn
               values={brands}

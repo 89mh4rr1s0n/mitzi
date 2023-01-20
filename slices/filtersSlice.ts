@@ -50,6 +50,9 @@ export const filtersSlice = createSlice({
       newList.splice(state.brand.indexOf(action.payload), 1)
       state.brand = newList
     },
+    clearBrands: (state) => {
+      state.brand = []
+    },
 
     // price reducers
     updateMinPrice: (state, action) => {
@@ -65,7 +68,7 @@ export const {
   // category actions
   addCategory, removeCategory, clearCategories, updateCategories,
   // brand actions
-  addBrand, removeBrand,
+  addBrand, removeBrand, clearBrands,
   // price actions
   updateMinPrice, updateMaxPrice,
  } = filtersSlice.actions;
