@@ -89,7 +89,7 @@ const CartCard = ({
           src={thumbnail}
           height={200}
           width={200}
-          objectFit='contain'
+          // objectFit='contain'
           alt=''
           className=' object-contain rounded-md min-w-[150px] max-h-[150px] sm:min-w-[200px] sm:max-h-[200px]'
         />

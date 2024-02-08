@@ -77,7 +77,7 @@ const MediumProductGridCard = ({
           src={thumbnail}
           height={200}
           width={200}
-          objectFit='contain'
+          // objectFit='contain'
           alt=''
           className=' object-contain rounded-md min-w-[200px] max-h-[200px]'
         />

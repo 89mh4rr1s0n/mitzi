@@ -78,8 +78,9 @@ const Header = ({ products }: Props) => {
                             src='/pngaaa.com-1757256.png'
                             width={60}
                             height={60}
-                            objectFit='contain'
+                            // objectFit='contain'
                             alt=''
+                            className='object-contain'
                         />
                         <div className='text-theme-red text-2xl font-bold hidden sm:inline'>ITZI</div>
                     </div>
@@ -128,7 +129,8 @@ const Header = ({ products }: Props) => {
                                 src='/pngaaa.com-1757256.png'
                                 width={60}
                                 height={60}
-                                objectFit='contain'
+                                // objectFit='contain'
+                                className='object-contain'
                                 alt=''
                             />
                             <div className='text-theme-red text-2xl font-bold hidden mb:inline'>ITZI</div>
